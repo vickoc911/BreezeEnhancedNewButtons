@@ -109,11 +109,15 @@ namespace Breeze
 
         //* draw button icon
         void drawIcon(QPainter *) const;
+        void drawIconPlasma( QPainter *) const;
+        void drawIconAqua( QPainter *) const;
+        void drawIconMacSymbols( QPainter *) const;
 
         //*@name colors
         //@{
         QColor foregroundColor(const QColor& inactiveCol) const;
         QColor backgroundColor() const;
+
         //@}
 
         //* active state change animation
