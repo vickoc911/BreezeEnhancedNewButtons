@@ -228,9 +228,9 @@ namespace Breeze
                     // ===== 2) Sombra interior radial =====
                     // Usamos QRadialGradient pero movemos el foco hacia arriba
                     QRadialGradient radial(
-                        circleRect.center().x(),           // centro del degradado
-                                           circleRect.center().y() - circleRect.height()*0.25,  // foco desplazado hacia arriba
-                                           circleRect.width() / 2.0           // radio
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() - r.height()*0.25,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
                     );
                     radial.setColorAt(0.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
                     radial.setColorAt(0.6, QColor(0, 0, 0, 60));
