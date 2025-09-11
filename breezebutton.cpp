@@ -217,30 +217,55 @@ namespace Breeze
 
                 case DecorationButtonType::Close:
                 {
+                    // === Paso 1: fondo liso ===
+                    QColor baseColor("#d6dbbf");       // color del botón
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
 
-                        // === Paso 1: fondo liso ===
-                        QColor baseColor("#d6dbbf");       // color del botón
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
+                    // === Paso 2: sombra interior ===
+                    // Creamos un degradado vertical que simule la luz entrando por abajo
+                    QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                    shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
+                    shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
+                    shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+                    // Usamos composición para "restar luz" (sombra interior)
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->setBrush(shadowGrad);
+                    painter->drawEllipse(r);
 
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,120), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
 
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,120), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                        if (backgroundColor.isValid())
+                        {
+                            // === Paso 1: fondo liso ===
+                            QColor baseColor("#d6dbbf");       // color del botón
+                            painter->setBrush(baseColor);
+                            painter->setPen(Qt::NoPen);
+                            painter->drawEllipse(r);
+
+                            // === Paso 2: sombra interior ===
+                            // Creamos un degradado vertical que simule la luz entrando por abajo
+                            QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                            shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
+                            shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
+                            shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                            // Usamos composición para "restar luz" (sombra interior)
+                            painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                            painter->setBrush(shadowGrad);
+                            painter->drawEllipse(r);
+
+                            // === Paso 3: borde sutil ===
+                            QPen border(QColor(0,0,0,120), 1);
+                            painter->setPen(border);
+                            painter->setBrush(Qt::NoBrush);
+                            painter->drawEllipse(r);
                         }
 
                     break;
