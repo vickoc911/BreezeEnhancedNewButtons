@@ -111,6 +111,7 @@ namespace Breeze
         void drawIcon(QPainter *) const;
         void drawIconPlasma( QPainter *) const;
         void drawIconAqua( QPainter *) const;
+        void drawIconSunken( QPainter *) const;
         void drawIconMacSymbols( QPainter *) const;
 
         //*@name colors
