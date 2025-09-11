@@ -225,20 +225,23 @@ namespace Breeze
                     painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // === Paso 2: sombra interior ===
-                    // Creamos un degradado vertical que simule la luz entrando por abajo
-                    QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                    shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
-                    shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
-                    shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        circleRect.center().x(),           // centro del degradado
+                                           circleRect.center().y() - circleRect.height()*0.25,  // foco desplazado hacia arriba
+                                           circleRect.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(0.6, QColor(0, 0, 0, 60));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // Usamos composición para "restar luz" (sombra interior)
+                    painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->setBrush(shadowGrad);
-                    painter->drawEllipse(r);
+                    painter->drawEllipse(circleRect);
 
                     // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,120), 1);
+                    QPen border(QColor(0,0,0,100), 1);
                     painter->setPen(border);
                     painter->setBrush(Qt::NoBrush);
                     painter->drawEllipse(r);
