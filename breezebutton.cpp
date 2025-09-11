@@ -217,17 +217,9 @@ namespace Breeze
 
                 case DecorationButtonType::Close:
                 {
-                        QLinearGradient grad(QPointF(9, 2), QPointF(9, 16));
-                        if (d && qGray(d->titleBarColor().rgb()) > 100)
-                        {
-                            grad.setColorAt(0.0, QColor("#2c3e50"));
-                            grad.setColorAt(1.0, QColor("#7f8c8d"));
-                        }
-                        else
-                        {
-                            grad.setColorAt(0.0, QColor("#6b8db8"));
-                            grad.setColorAt(1.0, QColor("#1a1a1a"));
-                        }
+                        QRadialGradient grad(width()/2.0, height()/2.0, width()/2.0);
+                        grad.setColorAt(0.0, QColor("#2c3e50"));
+                        grad.setColorAt(1.0, QColor("#7f8c8d"));
                         QRectF r(0,0, 18, 18);
                         painter->setBrush(grad);
                         painter->setPen(Qt::NoPen);
