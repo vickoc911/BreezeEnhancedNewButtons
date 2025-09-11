@@ -238,7 +238,7 @@ namespace Breeze
 
                     painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(circleRect);
+                    painter->drawEllipse(r);
 
                     // === Paso 3: borde sutil ===
                     QPen border(QColor(0,0,0,100), 1);
