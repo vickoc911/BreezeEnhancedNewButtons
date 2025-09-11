@@ -220,30 +220,37 @@ namespace Breeze
                         QLinearGradient grad(QPointF(9, 2), QPointF(9, 16));
                         if (d && qGray(d->titleBarColor().rgb()) > 100)
                         {
-                            grad.setColorAt(0, isInactive ? inactiveCol
-                                                          : QColor(255, 92, 87));
-                            grad.setColorAt(1, isInactive ? inactiveCol
-                                                          : QColor(233, 84, 79));
+                            grad.setColorAt(0.0, QColor("#2c3e50"));
+                            grad.setColorAt(1.0, QColor("#7f8c8d"));
                         }
                         else
                         {
-                            grad.setColorAt(0, isInactive ? inactiveCol
-                                                          : QColor(250, 100, 102));
-                            grad.setColorAt(1, isInactive ? inactiveCol
-                                                          : QColor(230, 92, 94));
+                            grad.setColorAt(0.0, QColor("#6b8db8"));
+                            grad.setColorAt(1.0, QColor("#1a1a1a"));
                         }
-                        painter->setBrush(QBrush(grad));
+                        QRectF r(0,0, 18, 18);
+                        painter->setBrush(grad);
                         painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(QRectF(1, 1, 16, 16));
+                        painter->drawEllipse(r);
+
+                        // Añadir borde para dar relieve
+                        QPen border(Qt::black, 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+
                         if (backgroundColor.isValid())
                         {
+                            QRectF r(0,0, 18, 18);
+                            painter->setBrush(grad);
                             painter->setPen(Qt::NoPen);
-                            painter->setBrush(backgroundColor);
-                            qreal r = static_cast<qreal>(7)
-                                      + (isPressed() ? 0.0
-                                         : static_cast<qreal>(2) * m_animation->currentValue().toReal());
-                            QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                            painter->drawEllipse(c, r, r);
+                            painter->drawEllipse(r);
+
+                            // Añadir borde para dar relieve
+                            QPen border(Qt::black, 1);
+                            painter->setPen(border);
+                            painter->setBrush(Qt::NoBrush);
+                            painter->drawEllipse(r);
                         }
 
                     break;
