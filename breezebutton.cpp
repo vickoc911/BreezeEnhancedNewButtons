@@ -217,39 +217,30 @@ namespace Breeze
 
                 case DecorationButtonType::Close:
                 {
-                        QLinearGradient grad(QPointF(9, 2), QPointF(9, 16));
-                        grad.setColorAt(0.0, QColor("#2c3e50"));
-                        grad.setColorAt(0.5, QColor("#d6dbbf"));
-                        grad.setColorAt(1.0, QColor("#d6dbbf"));
-/*                        }
-                        else
-                        {
-                            grad.setColorAt(0.0, QColor("#6b8db8"));
-                            grad.setColorAt(1.0, QColor("#1a1a1a"));
-                        } */
-                        QRectF r(0,0, 18, 18);
-                        painter->setBrush(grad);
+
+                        // === Paso 1: fondo liso ===
+                        QColor baseColor("#d6dbbf");       // color del botón
+                        painter->setBrush(baseColor);
                         painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // Añadir borde para dar relieve
-                        QPen border(Qt::black, 1);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,120), 1);
                         painter->setPen(border);
                         painter->setBrush(Qt::NoBrush);
                         painter->drawEllipse(r);
-
-                        if (backgroundColor.isValid())
-                        {
-                            QRectF r(0,0, 18, 18);
-                            painter->setBrush(grad);
-                            painter->setPen(Qt::NoPen);
-                            painter->drawEllipse(r);
-
-                            // Añadir borde para dar relieve
-                            QPen border(Qt::black, 1);
-                            painter->setPen(border);
-                            painter->setBrush(Qt::NoBrush);
-                            painter->drawEllipse(r);
                         }
 
                     break;
