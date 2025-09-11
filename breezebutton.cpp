@@ -219,7 +219,8 @@ namespace Breeze
                 {
                         QLinearGradient grad(QPointF(9, 2), QPointF(9, 16));
                         grad.setColorAt(0.0, QColor("#2c3e50"));
-                        grad.setColorAt(1.0, QColor("#7f8c8d"));
+                        grad.setColorAt(0.5, QColor("#d6dbb"));
+                        grad.setColorAt(1.0, QColor("#d6dbb"));
 /*                        }
                         else
                         {
