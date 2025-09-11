@@ -217,6 +217,8 @@ namespace Breeze
 
                 case DecorationButtonType::Close:
                 {
+                    QRectF r(0,0, 18, 18);
+
                     // === Paso 1: fondo liso ===
                     QColor baseColor("#d6dbbf");       // color del botón
                     painter->setBrush(baseColor);
