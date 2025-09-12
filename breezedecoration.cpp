@@ -281,8 +281,7 @@ namespace Breeze
         if (m_internalSettings && (m_internalSettings->mask() & BorderSize))
         {
             switch (m_internalSettings->borderSize()) {
-                const auto borderSize = m_internalSettings->roundedCorners() ? InternalSettings::BorderNone : m_internalSettings->borderSize();
-                switch (borderSize) {
+                switch (m_internalSettings->borderSize()) {
                 case InternalSettings::BorderNone: return 0;
                 case InternalSettings::BorderNoSides:
                     if (bottom)
@@ -305,8 +304,7 @@ namespace Breeze
 
         } else {
 
-            const auto borderSize = m_internalSettings->roundedCorners() ? KDecoration3::BorderSize::None : settings()->borderSize();
-            switch (borderSize) {
+            switch (settings()->borderSize()) {
                 case KDecoration3::BorderSize::None: return 0;
                 case KDecoration3::BorderSize::NoSides:
                     if (bottom)
@@ -408,7 +406,7 @@ namespace Breeze
         setResizeOnlyBorders(QMargins(extSides, 0, extSides, extBottom));
         qreal bottomLeftRadius = 0;
         qreal bottomRightRadius = 0;
-        if (m_internalSettings->roundedCorners()) {
+        if (hasNoBorders() && m_internalSettings->roundedCorners()) {
             if (!isBottomEdge()) {
                 if (!isLeftEdge()) {
                     bottomLeftRadius = m_scaledCornerRadius;
