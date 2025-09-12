@@ -281,7 +281,6 @@ namespace Breeze
         if (m_internalSettings && (m_internalSettings->mask() & BorderSize))
         {
             switch (m_internalSettings->borderSize()) {
-                switch (m_internalSettings->borderSize()) {
                 case InternalSettings::BorderNone: return 0;
                 case InternalSettings::BorderNoSides:
                     if (bottom)
