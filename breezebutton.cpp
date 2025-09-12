@@ -1680,20 +1680,16 @@ namespace Breeze
                         painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // ===== 2) Sombra interior radial =====
-                        // Usamos QRadialGradient pero movemos el foco hacia arriba
-                        QRadialGradient radial(
-                            r.center().x(),           // centro del degradado
-                                               r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
-                                               r.width() / 2.0           // radio
-                        );
-                        radial.setColorAt(0.0, QColor(0, 0, 0, 0)); // más oscuro en el foco (arriba)
-                        //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
-                        radial.setColorAt(0.7, QColor(0, 0, 0, 10));
-                        radial.setColorAt(1.0, QColor(0, 0, 0, 100));   // se desvanece hacia bordes
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        painter->setBrush(radial);
+                        // Usamos composición para "restar luz" (sombra interior)
                         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
                         painter->drawEllipse(r);
 
                         // === Paso 3: borde sutil ===
@@ -1858,20 +1854,16 @@ namespace Breeze
                         painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // ===== 2) Sombra interior radial =====
-                        // Usamos QRadialGradient pero movemos el foco hacia arriba
-                        QRadialGradient radial(
-                            r.center().x(),           // centro del degradado
-                                               r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
-                                               r.width() / 2.0           // radio
-                        );
-                        radial.setColorAt(0.0, QColor(0, 0, 0, 0)); // más oscuro en el foco (arriba)
-                        //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
-                        radial.setColorAt(0.7, QColor(0, 0, 0, 10));
-                        radial.setColorAt(1.0, QColor(0, 0, 0, 100));   // se desvanece hacia bordes
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 90));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 40));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        painter->setBrush(radial);
+                        // Usamos composición para "restar luz" (sombra interior)
                         painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
                         painter->drawEllipse(r);
 
                         // === Paso 3: borde sutil ===
