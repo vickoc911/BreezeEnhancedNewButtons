@@ -303,7 +303,7 @@ namespace Breeze
             modified = true;
         else if (m_ui.drawBackgroundGradient->isChecked() !=  m_internalSettings->drawBackgroundGradient())
             modified = true;
-        else if (m_ui.roundedCorners->isChecked() != m_internalSettings->roundedCorners()) {
+        else if (m_ui.roundedCorners->isChecked() != m_internalSettings->roundedCorners())
             modified = true;
         else if (m_ui.opacitySpinBox->value() != m_internalSettings->backgroundOpacity())
             modified = true;
