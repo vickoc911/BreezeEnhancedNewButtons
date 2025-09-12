@@ -163,6 +163,11 @@
       <default>true</default>
     </entry>
 
+    <entry name="RoundedCorners" type = "Bool">
+      <default>true</default>
+    </entry>
+
+
     <entry name="Mask" type = "Int">
       <default>0</default>
     </entry>
