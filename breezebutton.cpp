@@ -1634,6 +1634,11 @@ namespace Breeze
 
                 case DecorationButtonType::Close:
                 {
+                    QLinearGradient grad(QPointF(9, 2), QPointF(9, 16));
+                    grad.setColorAt(0, isInactive ? inactiveCol
+                    : QColor(255, 92, 87));
+                    grad.setColorAt(1, isInactive ? inactiveCol
+                    : QColor(233, 84, 79));
 
                     QColor baseColor;
 
@@ -1675,28 +1680,15 @@ namespace Breeze
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(baseColor.darker(140));
+                        painter->drawEllipse(QRectF(r));
 
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
+                     /*   // === Paso 3: borde sutil ===
                         QPen border(QColor(0,0,0,100), 1);
                         painter->setPen(border);
                         painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                        painter->drawEllipse(r); */
 
                     }
                     if (isHovered()) {
