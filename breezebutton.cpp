@@ -1658,7 +1658,7 @@ namespace Breeze
                     );
                     radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
                     //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.5, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
                     painter->setBrush(radial);
@@ -1734,7 +1734,7 @@ namespace Breeze
                     );
                     radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
                     //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.5, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
                     painter->setBrush(radial);
@@ -1830,9 +1830,9 @@ namespace Breeze
                                            r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
                                            r.width() / 2.0           // radio
                     );
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 10)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
                     //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.6, QColor(0, 0, 0, 100));
+                    radial.setColorAt(0.5, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
                     painter->setBrush(radial);
