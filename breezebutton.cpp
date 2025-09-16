@@ -1656,10 +1656,10 @@ namespace Breeze
                                            r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
                                            r.width() / 2.0           // radio
                     );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
                     //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.7, QColor(0, 0, 0, 100));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 10));   // se desvanece hacia bordes
+                    radial.setColorAt(0.7, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
                     painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1732,10 +1732,10 @@ namespace Breeze
                                            r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
                                            r.width() / 2.0           // radio
                     );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 90)); // más oscuro en el foco (arriba)
                     //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.7, QColor(0, 0, 0, 10));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
                     painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1830,10 +1830,10 @@ namespace Breeze
                                            r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
                                            r.width() / 2.0           // radio
                     );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 90)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 80)); // más oscuro en el foco (arriba)
                     //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.7, QColor(0, 0, 0, 10));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
                     painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
