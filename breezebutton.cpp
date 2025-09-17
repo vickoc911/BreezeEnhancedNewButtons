@@ -1893,63 +1893,59 @@ namespace Breeze
 
                     QRectF r(0,0, 18, 18);
 
-                    // --- Degradado principal (radial invertido) ---
-                    QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                    base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                    base.setColorAt(0.6, baseColor);
-                    base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                    painter->setBrush(base);
-                    painter->setPen(baseColor.darker(140));
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // --- Highlight superior ovalado (reflejo Aqua) ---
-                    QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                    QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                    gloss.setColorAt(0.0, QColor(255,255,255,180));
-                    gloss.setColorAt(1.0, QColor(255,255,255,0));
-                    painter->setBrush(gloss);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRect);
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.55, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // --- Bisel interior claro ---
-                    QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                    QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                    innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                    innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                    painter->setBrush(innerHighlight);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRectb);
-                    //  painter->drawEllipse(QRectF(1, 1, 16, 16));
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
                     if (backgroundColor.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // --- Degradado principal (radial invertido) ---
-                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                        base.setColorAt(0.6, baseColor);
-                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                        painter->setBrush(base);
-                        painter->setPen(baseColor.darker(140));
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // --- Highlight superior ovalado (reflejo Aqua) ---
-                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                        gloss.setColorAt(0.0, QColor(255,255,255,180));
-                        gloss.setColorAt(1.0, QColor(255,255,255,0));
-                        painter->setBrush(gloss);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRect);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // --- Bisel interior claro ---
-                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                        painter->setBrush(innerHighlight);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRectb);
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
                     }
                     if (isPressed() || isHovered() || isChecked()) {
                         /*         if ((isPressed()) && backgroundColor.isValid())
@@ -1976,63 +1972,59 @@ namespace Breeze
 
                     QRectF r(0,0, 18, 18);
 
-                    // --- Degradado principal (radial invertido) ---
-                    QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                    base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                    base.setColorAt(0.6, baseColor);
-                    base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                    painter->setBrush(base);
-                    painter->setPen(baseColor.darker(140));
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // --- Highlight superior ovalado (reflejo Aqua) ---
-                    QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                    QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                    gloss.setColorAt(0.0, QColor(255,255,255,180));
-                    gloss.setColorAt(1.0, QColor(255,255,255,0));
-                    painter->setBrush(gloss);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRect);
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.55, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // --- Bisel interior claro ---
-                    QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                    QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                    innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                    innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                    painter->setBrush(innerHighlight);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRectb);
-                    //  painter->drawEllipse(QRectF(1, 1, 16, 16));
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
                     if (backgroundColor.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // --- Degradado principal (radial invertido) ---
-                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                        base.setColorAt(0.6, baseColor);
-                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                        painter->setBrush(base);
-                        painter->setPen(baseColor.darker(140));
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // --- Highlight superior ovalado (reflejo Aqua) ---
-                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                        gloss.setColorAt(0.0, QColor(255,255,255,180));
-                        gloss.setColorAt(1.0, QColor(255,255,255,0));
-                        painter->setBrush(gloss);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRect);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // --- Bisel interior claro ---
-                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                        painter->setBrush(innerHighlight);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRectb);
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
                     }
                     if (isPressed() || isHovered() || isChecked()) {
                         /*         if ((isPressed()) && backgroundColor.isValid())
@@ -2063,63 +2055,59 @@ namespace Breeze
 
                     QRectF r(0,0, 18, 18);
 
-                    // --- Degradado principal (radial invertido) ---
-                    QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                    base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                    base.setColorAt(0.6, baseColor);
-                    base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                    painter->setBrush(base);
-                    painter->setPen(baseColor.darker(140));
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // --- Highlight superior ovalado (reflejo Aqua) ---
-                    QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                    QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                    gloss.setColorAt(0.0, QColor(255,255,255,180));
-                    gloss.setColorAt(1.0, QColor(255,255,255,0));
-                    painter->setBrush(gloss);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRect);
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.55, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // --- Bisel interior claro ---
-                    QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                    QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                    innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                    innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                    painter->setBrush(innerHighlight);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRectb);
-                    //  painter->drawEllipse(QRectF(1, 1, 16, 16));
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
                     if (backgroundColor.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // --- Degradado principal (radial invertido) ---
-                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                        base.setColorAt(0.6, baseColor);
-                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                        painter->setBrush(base);
-                        painter->setPen(baseColor.darker(140));
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // --- Highlight superior ovalado (reflejo Aqua) ---
-                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                        gloss.setColorAt(0.0, QColor(255,255,255,180));
-                        gloss.setColorAt(1.0, QColor(255,255,255,0));
-                        painter->setBrush(gloss);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRect);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // --- Bisel interior claro ---
-                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                        painter->setBrush(innerHighlight);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRectb);
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
                     }
                     if (isPressed() || isHovered() || isChecked()) {
                         /*         if ((isPressed()) && backgroundColor.isValid())
@@ -2155,63 +2143,59 @@ namespace Breeze
 
                     QRectF r(0,0, 18, 18);
 
-                    // --- Degradado principal (radial invertido) ---
-                    QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                    base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                    base.setColorAt(0.6, baseColor);
-                    base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                    painter->setBrush(base);
-                    painter->setPen(baseColor.darker(140));
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // --- Highlight superior ovalado (reflejo Aqua) ---
-                    QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                    QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                    gloss.setColorAt(0.0, QColor(255,255,255,180));
-                    gloss.setColorAt(1.0, QColor(255,255,255,0));
-                    painter->setBrush(gloss);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRect);
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.55, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // --- Bisel interior claro ---
-                    QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                    QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                    innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                    innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                    painter->setBrush(innerHighlight);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRectb);
-                    //  painter->drawEllipse(QRectF(1, 1, 16, 16));
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
                     if (backgroundColor.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // --- Degradado principal (radial invertido) ---
-                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                        base.setColorAt(0.6, baseColor);
-                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                        painter->setBrush(base);
-                        painter->setPen(baseColor.darker(140));
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // --- Highlight superior ovalado (reflejo Aqua) ---
-                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                        gloss.setColorAt(0.0, QColor(255,255,255,180));
-                        gloss.setColorAt(1.0, QColor(255,255,255,0));
-                        painter->setBrush(gloss);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRect);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // --- Bisel interior claro ---
-                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                        painter->setBrush(innerHighlight);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRectb);
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
                     }
                     if (isPressed() || isHovered() || isChecked()) {
                         /*         if ((isPressed()) && backgroundColor.isValid())
@@ -2247,63 +2231,59 @@ namespace Breeze
 
                     QRectF r(0,0, 18, 18);
 
-                    // --- Degradado principal (radial invertido) ---
-                    QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                    base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                    base.setColorAt(0.6, baseColor);
-                    base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                    painter->setBrush(base);
-                    painter->setPen(baseColor.darker(140));
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // --- Highlight superior ovalado (reflejo Aqua) ---
-                    QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                    QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                    gloss.setColorAt(0.0, QColor(255,255,255,180));
-                    gloss.setColorAt(1.0, QColor(255,255,255,0));
-                    painter->setBrush(gloss);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRect);
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.55, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // --- Bisel interior claro ---
-                    QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                    QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                    innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                    innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                    painter->setBrush(innerHighlight);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRectb);
-                    //  painter->drawEllipse(QRectF(1, 1, 16, 16));
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
                     if (backgroundColor.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // --- Degradado principal (radial invertido) ---
-                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                        base.setColorAt(0.6, baseColor);
-                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                        painter->setBrush(base);
-                        painter->setPen(baseColor.darker(140));
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // --- Highlight superior ovalado (reflejo Aqua) ---
-                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                        gloss.setColorAt(0.0, QColor(255,255,255,180));
-                        gloss.setColorAt(1.0, QColor(255,255,255,0));
-                        painter->setBrush(gloss);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRect);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // --- Bisel interior claro ---
-                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                        painter->setBrush(innerHighlight);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRectb);
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
                     }
                     if (isPressed() || isHovered()) {
                         /*         if ((isPressed()) && backgroundColor.isValid())
@@ -2332,63 +2312,59 @@ namespace Breeze
 
                     QRectF r(0,0, 18, 18);
 
-                    // --- Degradado principal (radial invertido) ---
-                    QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                    base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                    base.setColorAt(0.6, baseColor);
-                    base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                    painter->setBrush(base);
-                    painter->setPen(baseColor.darker(140));
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
                     painter->drawEllipse(r);
 
-                    // --- Highlight superior ovalado (reflejo Aqua) ---
-                    QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                    QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                    gloss.setColorAt(0.0, QColor(255,255,255,180));
-                    gloss.setColorAt(1.0, QColor(255,255,255,0));
-                    painter->setBrush(gloss);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRect);
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    //     radial.setColorAt(0.6, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.55, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
 
-                    // --- Bisel interior claro ---
-                    QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                    QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                    innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                    innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                    painter->setBrush(innerHighlight);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(highlightRectb);
-                    //  painter->drawEllipse(QRectF(1, 1, 16, 16));
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
                     if (backgroundColor.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        // --- Degradado principal (radial invertido) ---
-                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
-                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
-                        base.setColorAt(0.6, baseColor);
-                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
-                        painter->setBrush(base);
-                        painter->setPen(baseColor.darker(140));
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
                         painter->drawEllipse(r);
 
-                        // --- Highlight superior ovalado (reflejo Aqua) ---
-                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
-                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
-                        gloss.setColorAt(0.0, QColor(255,255,255,180));
-                        gloss.setColorAt(1.0, QColor(255,255,255,0));
-                        painter->setBrush(gloss);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRect);
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
 
-                        // --- Bisel interior claro ---
-                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
-                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
-                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
-                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
-                        painter->setBrush(innerHighlight);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(highlightRectb);
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
                     }
                     if (isPressed() || isHovered()) {
                         /*         if ((isPressed()) && backgroundColor.isValid())
