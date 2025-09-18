@@ -1659,8 +1659,8 @@ namespace Breeze
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
                     radial.setColorAt(0.4, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 100));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
                     painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
                     painter->drawEllipse(r);
@@ -1735,8 +1735,8 @@ namespace Breeze
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
                     radial.setColorAt(0.4, QColor(0, 0, 0, 10));
                     radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 100));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 100)); // más oscuro en el foco (arriba)
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
 
                     painter->setBrush(radial);
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1889,7 +1889,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226);
+                        baseColor = QColor(82, 148, 226, 40);
                     else
                         baseColor = inactiveCol;
 
@@ -1969,7 +1969,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226);
+                        baseColor = QColor(82, 148, 226, 40);
                     else
                         baseColor = inactiveCol;
 
@@ -2053,7 +2053,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226);
+                        baseColor = QColor(82, 148, 226, 40);
                     else
                         baseColor = inactiveCol;
 
@@ -2142,7 +2142,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226);
+                        baseColor = QColor(82, 148, 226, 40);
                     else
                         baseColor = inactiveCol;
 
