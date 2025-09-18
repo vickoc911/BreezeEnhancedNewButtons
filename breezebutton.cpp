@@ -1889,7 +1889,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226, 40);
+                        baseColor = QColor(132, 165, 202);
                     else
                         baseColor = inactiveCol;
 
@@ -1969,7 +1969,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226, 40);
+                        baseColor = QColor(132, 165, 202);
                     else
                         baseColor = inactiveCol;
 
@@ -2053,7 +2053,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226, 40);
+                        baseColor = QColor(132, 165, 202);
                     else
                         baseColor = inactiveCol;
 
@@ -2142,7 +2142,7 @@ namespace Breeze
                     QColor baseColor;
 
                     if ( !isInactive )
-                        baseColor = QColor(82, 148, 226, 40);
+                        baseColor = QColor(132, 165, 202);
                     else
                         baseColor = inactiveCol;
 
