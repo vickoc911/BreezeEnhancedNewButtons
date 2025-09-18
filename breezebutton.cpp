@@ -1657,9 +1657,9 @@ namespace Breeze
                                            r.width() / 2.0           // radio
                     );
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 80));
-                    radial.setColorAt(0.9, QColor(0, 0, 0, 120));
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 30));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 90));
+                    radial.setColorAt(0.97, QColor(0, 0, 0, 120));
                     radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
                  /*   radial.setColorAt(0.8, QColor(0, 0, 0, 80));
                     radial.setColorAt(0.4, QColor(0, 0, 0, 10));
@@ -1670,11 +1670,11 @@ namespace Breeze
                     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
                     painter->drawEllipse(r);
 
-                    // === Paso 3: borde sutil ===
+                 /*   // === Paso 3: borde sutil ===
                     QPen border(QColor(0,0,0,100), 1);
                     painter->setPen(border);
                     painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
+                    painter->drawEllipse(r); */
 
                     if (backgroundColor.isValid())
                     {
@@ -1738,13 +1738,13 @@ namespace Breeze
                                            r.width() / 2.0           // radio
                     );
                     radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 20));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 90));
+                    radial.setColorAt(0.97, QColor(0, 0, 0, 120));
                     radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
 
                     painter->setBrush(radial);
-                 //   painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
                     painter->drawEllipse(r);
 
                     // === Paso 3: borde sutil ===
