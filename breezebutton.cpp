@@ -2976,10 +2976,10 @@ namespace Breeze
                 {
 
                     QColor base;
-                    const bool sunken = isPressed() || (isToggleButton() && isChecked());
+                    const bool sunken = isPressed() && isChecked());
 
                     if ( !isInactive )
-                        base = backgroundColor(this->backgroundColor());
+                        base = backgroundColor;
                     else
                         base = inactiveCol;
 
@@ -3007,12 +3007,12 @@ namespace Breeze
                     }
 
                     // button glow
-                    if (glow.isValid()) {
+                 /*   if (glow.isValid()) {
                         painter->save();
                         painter->translate(0, -0.2);
                         drawOuterGlow(painter, glow, 21);
                         painter->restore();
-                    }
+                    } */
 
                     // button slab
                     painter->translate(0, 1);
@@ -3057,6 +3057,11 @@ namespace Breeze
 
                     }
                     if (isHovered()) {
+                        painter->save();
+                        painter->translate(0, -0.2);
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+
                         painter->setPen(pen);
                         painter->setBrush(symbolColor);
 
@@ -4026,6 +4031,62 @@ namespace Breeze
             }
         }
 
+    }
+
+    //_______________________________________________________________________
+    void Helper::drawOuterGlow(QPainter &painter, const QColor &color, int size)
+    {
+        const QRectF r(0, 0, size, size);
+        const qreal m(qreal(size) * 0.5);
+        const qreal width(3);
+
+        const qreal bias(_glowBias * qreal(14) / size);
+
+        // k0 is located at width - bias from the outer edge
+        const qreal gm(m + bias - 0.9);
+        const qreal k0((m - width + bias) / gm);
+        QRadialGradient glowGradient(m, m, gm);
+        for (int i = 0; i < 8; i++) {
+            // k1 grows linearly from k0 to 1.0
+            const qreal k1(k0 + qreal(i) * (1.0 - k0) / 8.0);
+
+            // a folows sqrt curve
+            const qreal a(1.0 - sqrt(qreal(i) / 8));
+            glowGradient.setColorAt(k1, alphaColor(color, a));
+        }
+
+        // glow
+        painter.save();
+        painter.setBrush(glowGradient);
+        painter.drawEllipse(r);
+
+        // inside mask
+        painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+        painter.setBrush(Qt::black);
+        painter.drawEllipse(r.adjusted(width + 0.5, width + 0.5, -width - 1, -width - 1));
+        painter.restore();
+    }
+
+    //___________________________________________________________________________________________
+    void Helper::drawShadow(QPainter &painter, const QColor &color, int size)
+    {
+        const qreal m(qreal(size - 2) * 0.5);
+        const qreal offset(0.8);
+        const qreal k0((m - 4.0) / m);
+
+        QRadialGradient shadowGradient(m + 1.0, m + offset + 1.0, m);
+        for (int i = 0; i < 8; i++) {
+            // sinusoidal gradient
+            const qreal k1((k0 * qreal(8 - i) + qreal(i)) * 0.125);
+            const qreal a((cos(M_PI * i * 0.125) + 1.0) * 0.30);
+            shadowGradient.setColorAt(k1, alphaColor(color, a * _shadowGain));
+        }
+
+        shadowGradient.setColorAt(1.0, alphaColor(color, 0.0));
+        painter.save();
+        painter.setBrush(shadowGradient);
+        painter.drawEllipse(QRectF(0, 0, size, size));
+        painter.restore();
     }
 
     //________________________________________________________________
