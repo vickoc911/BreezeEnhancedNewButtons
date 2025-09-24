@@ -4074,7 +4074,7 @@ namespace Breeze
 
             // a folows sqrt curve
             const qreal a(1.0 - sqrt(qreal(i) / 8));
-            glowGradient.setColorAt(k1, color.setAlpha(a));
+            glowGradient.setColorAt(k1, alphaColor(color, a));
         }
 
         // glow
@@ -4102,14 +4102,23 @@ namespace Breeze
             // sinusoidal gradient
             const qreal k1((k0 * qreal(8 - i) + qreal(i)) * 0.125);
             const qreal a((cos(M_PI * i * 0.125) + 1.0) * 0.30);
-            shadowGradient.setColorAt(k1, color.setAlpha(a * shadowGain));
+            shadowGradient.setColorAt(k1, alphaColor(color, a * shadowGain));
         }
 
-        shadowGradient.setColorAt(1.0, color.setAlpha(0.0));
+        shadowGradient.setColorAt(1.0, alphaColor(color, 0.0));
         painter->save();
         painter->setBrush(shadowGradient);
         painter->drawEllipse(QRectF(0, 0, size, size));
         painter->restore();
+    }
+
+
+    QColor Button::alphaColor(QColor color, qreal alpha)
+    {
+        if (alpha >= 0 && alpha < 1.0) {
+            color.setAlphaF(alpha * color.alphaF());
+        }
+        return color;
     }
 
     //________________________________________________________________
