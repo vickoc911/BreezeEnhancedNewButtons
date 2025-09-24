@@ -2976,7 +2976,7 @@ namespace Breeze
                 {
 
                     QColor base;
-                    const bool sunken = isPressed() && isChecked());
+                    const bool sunken = isPressed() && isChecked();
 
                     if ( !isInactive )
                         base = backgroundColor;
@@ -3002,7 +3002,7 @@ namespace Breeze
                     if (color.isValid()) {
                         painter->save();
                         painter->translate(0, -0.2);
-                        drawShadow(panter, calcShadowColor(color), 21);
+                        drawShadow(painter, color, 21);
                         painter->restore();
                     }
 
@@ -3024,18 +3024,18 @@ namespace Breeze
 
                         painter->translate(0, (0.5 - 0.668));
 
-                        const QColor light(calcLightColor(color));
-                        const QColor dark(calcDarkColor(color));
+                      //  const QColor light(calcLightColor(color));
+                      //  const QColor dark(calcDarkColor(color));
 
                         {
                             // plain background
                             QLinearGradient lg(0, 1.665, 0, (12.33 + 1.665));
                             if (sunken) {
-                                lg.setColorAt(1, light);
-                                lg.setColorAt(0, dark);
+                                lg.setColorAt(1, color.lighter(150));
+                                lg.setColorAt(0, color.darker(150));
                             } else {
-                                lg.setColorAt(0, light);
-                                lg.setColorAt(1, dark);
+                                lg.setColorAt(0, color.lighter(150));
+                                lg.setColorAt(1, color.darker(150));
                             }
 
                             const QRectF r(0.5 * (18 - 12.33), 1.665, 12.33, 12.33);
