@@ -116,10 +116,10 @@ namespace Breeze
         void drawIconOxygen( QPainter *) const;
 
         //* generic outer glow (to be stored in tilesets)
-        virtual void drawOuterGlow(QPainter &, const QColor &, int size);
+        virtual void drawOuterGlow(QPainter *, const QColor &, int size);
 
         //* generic outer shadow (to be stored in tilesets)
-        virtual void drawShadow(QPainter &, const QColor &, int size);
+        virtual void drawShadow(QPainter *, const QColor &, int size);
 
         //*@name colors
         //@{

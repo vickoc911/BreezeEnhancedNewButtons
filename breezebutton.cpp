@@ -3047,8 +3047,8 @@ namespace Breeze
                             // outline circle
                             const qreal penWidth(0.7);
                             QLinearGradient lg(0, 1.665, 0, (2.0 * 12.33 + 1.665));
-                            lg.setColorAt(0, light);
-                            lg.setColorAt(1, dark);
+                            lg.setColorAt(0, color.lighter(150));
+                            lg.setColorAt(1, color.darker(150));
                             const QRectF r(0.5 * (18 - 12.33 + penWidth), (1.665 + penWidth), (12.33 - penWidth), (12.33 - penWidth));
                             painter->setPen(QPen(lg, penWidth));
                             painter->setBrush(Qt::NoBrush);
@@ -3056,6 +3056,26 @@ namespace Breeze
                         }
 
                     }
+
+                    // Icon
+                    painter->setRenderHints(QPainter::Antialiasing);
+                    painter->translate(geometry().topLeft());
+
+                    qreal width(1.2);
+
+                    // contrast
+                    painter->setBrush(Qt::NoBrush);
+                    painter->translate(0, 1.5);
+                    painter->setPen(QPen(base.lighter(150), width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                    drawIcon(painter);
+
+                    // main
+                    painter->translate(0, -1.5);
+                    painter->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                    drawIcon(painter);
+
+                    painter->restore();
+
                     if (isHovered()) {
                         painter->save();
                         painter->translate(0, -0.2);
@@ -4034,13 +4054,15 @@ namespace Breeze
     }
 
     //_______________________________________________________________________
-    void Helper::drawOuterGlow(QPainter &painter, const QColor &color, int size)
+    void Button::drawOuterGlow(QPainter *painter, const QColor &color, int size)
     {
         const QRectF r(0, 0, size, size);
         const qreal m(qreal(size) * 0.5);
         const qreal width(3);
+        const qreal glowBias = 0.6;
 
-        const qreal bias(_glowBias * qreal(14) / size);
+
+        const qreal bias(glowBias * qreal(14) / size);
 
         // k0 is located at width - bias from the outer edge
         const qreal gm(m + bias - 0.9);
@@ -4052,7 +4074,7 @@ namespace Breeze
 
             // a folows sqrt curve
             const qreal a(1.0 - sqrt(qreal(i) / 8));
-            glowGradient.setColorAt(k1, alphaColor(color, a));
+            glowGradient.setColorAt(k1, color.setAlpha(a));
         }
 
         // glow
@@ -4068,21 +4090,22 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________
-    void Helper::drawShadow(QPainter &painter, const QColor &color, int size)
+    void Button::drawShadow(QPainter *painter, const QColor &color, int size)
     {
         const qreal m(qreal(size - 2) * 0.5);
         const qreal offset(0.8);
         const qreal k0((m - 4.0) / m);
+        const qreal shadowGain = 1.5;
 
         QRadialGradient shadowGradient(m + 1.0, m + offset + 1.0, m);
         for (int i = 0; i < 8; i++) {
             // sinusoidal gradient
             const qreal k1((k0 * qreal(8 - i) + qreal(i)) * 0.125);
             const qreal a((cos(M_PI * i * 0.125) + 1.0) * 0.30);
-            shadowGradient.setColorAt(k1, alphaColor(color, a * _shadowGain));
+            shadowGradient.setColorAt(k1, color.setAlpha(a * shadowGain));
         }
 
-        shadowGradient.setColorAt(1.0, alphaColor(color, 0.0));
+        shadowGradient.setColorAt(1.0, color.setAlpha(0.0));
         painter.save();
         painter.setBrush(shadowGradient);
         painter.drawEllipse(QRectF(0, 0, size, size));
