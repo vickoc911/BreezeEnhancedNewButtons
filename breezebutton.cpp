@@ -158,7 +158,7 @@ namespace Breeze
             else if ( d && d->internalSettings()->buttonStyle() == 2 )
                 drawIconSunken( painter );
             else if ( d && d->internalSettings()->buttonStyle() == 3 )
-                drawIconPlasma( painter );
+                drawIconOxygen( painter );
             }
         painter->restore();
 
@@ -2909,6 +2909,846 @@ namespace Breeze
                         painter->drawPoint(9, 15);
                     }
 
+                    break;
+                }
+
+                default: break;
+
+            }
+
+        }
+
+    }
+
+    //__________________________________________________________________
+    void Button::drawIconOxygen( QPainter *painter ) const
+    {
+        painter->setRenderHints(QPainter::Antialiasing);
+
+        /*
+         *   scale painter so that its window matches QRect(-1, -1, 20, 20)
+         *   this makes all further rendering and scaling simpler
+         *   all further rendering is performed inside QRect(0, 0, 18, 18)
+         */
+        const QRectF rect = geometry().marginsRemoved(m_padding);
+        painter->translate(rect.topLeft());
+
+        const qreal width(rect.width());
+        painter->scale(width/20, width/20);
+        painter->translate(1, 1);
+
+        // render background
+        const QColor backgroundColor(this->backgroundColor());
+
+        auto d = qobject_cast<Decoration*>(decoration());
+        bool isInactive(d && !d->window()->isActive()
+        && !isHovered() && !isPressed()
+        && m_animation->state() != QAbstractAnimation::Running);
+        QColor inactiveCol(Qt::gray);
+        if (isInactive)
+        {
+            int gray = qGray(d->titleBarColor().rgb());
+            if (gray <= 200) {
+                gray += 55;
+                gray = qMax(gray, 115);
+            }
+            else gray -= 45;
+            inactiveCol = QColor(gray, gray, gray);
+        }
+
+        QColor symbolColor;
+        symbolColor = QColor(34, 45, 50);
+        // render mark
+        const QColor foregroundColor(this->foregroundColor(inactiveCol));
+        if (foregroundColor.isValid())
+        {
+
+            // setup painter
+            QPen pen(symbolColor);
+            pen.setCapStyle(Qt::RoundCap);
+            pen.setJoinStyle(Qt::MiterJoin);
+            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
+
+            switch (type())
+            {
+
+                case DecorationButtonType::Close:
+                {
+
+                    QColor base;
+                    const bool sunken = isPressed() || (isToggleButton() && isChecked());
+
+                    if ( !isInactive )
+                        base = backgroundColor(this->backgroundColor());
+                    else
+                        base = inactiveCol;
+
+                    QColor glow;
+                    glow = QColor(255, 92, 87);
+
+                    QRectF r(0,0, 18, 18);
+
+                    // base button color
+                  //  QColor base = backgroundColor(palette);
+
+                    // text color
+                    QColor color = foregroundColor;
+
+                    painter->setRenderHints(QPainter::Antialiasing);
+                    painter->setPen(Qt::NoPen);
+                    painter->setWindow(0, 0, 21, 21);
+
+                    // button shadow
+                    if (color.isValid()) {
+                        painter->save();
+                        painter->translate(0, -0.2);
+                        drawShadow(panter, calcShadowColor(color), 21);
+                        painter->restore();
+                    }
+
+                    // button glow
+                    if (glow.isValid()) {
+                        painter->save();
+                        painter->translate(0, -0.2);
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+                    }
+
+                    // button slab
+                    painter->translate(0, 1);
+                    painter->setWindow(0, 0, 18, 18);
+
+                    if (color.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        painter->translate(0, (0.5 - 0.668));
+
+                        const QColor light(calcLightColor(color));
+                        const QColor dark(calcDarkColor(color));
+
+                        {
+                            // plain background
+                            QLinearGradient lg(0, 1.665, 0, (12.33 + 1.665));
+                            if (sunken) {
+                                lg.setColorAt(1, light);
+                                lg.setColorAt(0, dark);
+                            } else {
+                                lg.setColorAt(0, light);
+                                lg.setColorAt(1, dark);
+                            }
+
+                            const QRectF r(0.5 * (18 - 12.33), 1.665, 12.33, 12.33);
+                            painter->setBrush(lg);
+                            painter->drawEllipse(r);
+                        }
+
+                        {
+                            // outline circle
+                            const qreal penWidth(0.7);
+                            QLinearGradient lg(0, 1.665, 0, (2.0 * 12.33 + 1.665));
+                            lg.setColorAt(0, light);
+                            lg.setColorAt(1, dark);
+                            const QRectF r(0.5 * (18 - 12.33 + penWidth), (1.665 + penWidth), (12.33 - penWidth), (12.33 - penWidth));
+                            painter->setPen(QPen(lg, penWidth));
+                            painter->setBrush(Qt::NoBrush);
+                            painter->drawEllipse(r);
+                        }
+
+                    }
+                    if (isHovered()) {
+                        painter->setPen(pen);
+                        painter->setBrush(symbolColor);
+
+                        painter->drawLine( QPointF( 6, 6 ), QPointF( 12, 12 ) );
+                        painter->drawLine( QPointF( 6, 12 ), QPointF( 12, 6 ) );
+                    }
+                    break;
+                }
+
+                case DecorationButtonType::Maximize:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(36, 191, 57);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+
+                    }
+                    if (isHovered()) {
+                        painter->setPen( Qt::NoPen );
+
+                        // two triangles
+                        QPainterPath path1, path2;
+                        if( isChecked() )
+                        {
+                            path1.moveTo(8.5, 9.5);
+                            path1.lineTo(2.5, 9.5);
+                            path1.lineTo(8.5, 15.5);
+
+                            path2.moveTo(9.5, 8.5);
+                            path2.lineTo(15.5, 8.5);
+                            path2.lineTo(9.5, 2.5);
+                        }
+                        else
+                        {
+                            path1.moveTo(5, 13);
+                            path1.lineTo(11, 13);
+                            path1.lineTo(5, 7);
+
+                            path2.moveTo(13, 5);
+                            path2.lineTo(7, 5);
+                            path2.lineTo(13, 11);
+                        }
+
+                        painter->fillPath(path1, QBrush(symbolColor));
+                        painter->fillPath(path2, QBrush(symbolColor));
+                    }
+                    break;
+                }
+
+                case DecorationButtonType::Minimize:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(243, 176, 43);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.15,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+
+                    }
+                    if (isHovered()) {
+                        pen.setWidthF(1.2*qMax((qreal)1.0, 20/width));
+                        painter->setPen(pen);
+                        painter->setBrush(symbolColor);
+                        painter->drawLine( QPointF( 5, 9 ), QPointF( 13, 9 ) );
+                    }
+                    break;
+                }
+
+                case DecorationButtonType::OnAllDesktops:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(132, 165, 202);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+                    }
+                    if (isPressed() || isHovered() || isChecked()) {
+                        /*         if ((isPressed()) && backgroundColor.isValid())
+                         *                    { * * *
+                         *                    painter->setPen(Qt::NoPen);
+                         *                    painter->setBrush(backgroundColor);
+                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
+                    } */
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(QRectF(6, 6, 6, 6));
+                    }
+                    break;
+                }
+
+                case DecorationButtonType::Shade:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(132, 165, 202);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+                    }
+                    if (isPressed() || isHovered() || isChecked()) {
+                        /*         if ((isPressed()) && backgroundColor.isValid())
+                         *                    { * *
+                         *                    painter->setPen(Qt::NoPen);
+                         *                    painter->setBrush(backgroundColor);
+                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
+                    } */
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawPolyline(QPolygonF()
+                        << QPointF(5, 13)
+                        << QPointF(9, 9)
+                        << QPointF(13, 13));
+                    }
+                    break;
+
+                }
+
+                case DecorationButtonType::KeepBelow:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(132, 165, 202);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+                    }
+                    if (isPressed() || isHovered() || isChecked()) {
+                        /*         if ((isPressed()) && backgroundColor.isValid())
+                         *                    { *
+                         *                    painter->setPen(Qt::NoPen);
+                         *                    painter->setBrush(backgroundColor);
+                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
+                    } */
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawPolyline(QPolygonF()
+                        << QPointF(6, 6)
+                        << QPointF(9, 9)
+                        << QPointF(12, 6));
+
+                        painter->drawPolyline(QPolygonF()
+                        << QPointF(6, 10)
+                        << QPointF(9, 13)
+                        << QPointF(12, 10));
+                    }
+                    break;
+
+                }
+
+                case DecorationButtonType::KeepAbove:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(132, 165, 202);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+                    }
+                    if (isPressed() || isHovered() || isChecked()) {
+                        /*         if ((isPressed()) && backgroundColor.isValid())
+                         *                   {
+                         *                       painter->setPen(Qt::NoPen);
+                         *                       painter->setBrush(backgroundColor);
+                         *                       painter->drawEllipse(QRectF(0, 0, 18, 18));
+                    } */
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawPolyline(QPolygonF()
+                        << QPointF(6, 8)
+                        << QPointF(9, 5)
+                        << QPointF(12, 8));
+
+                        painter->drawPolyline(QPolygonF()
+                        << QPointF(6, 12)
+                        << QPointF(9, 9)
+                        << QPointF(12, 12));
+                    }
+                    break;
+                }
+
+
+                case DecorationButtonType::ApplicationMenu:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(230, 129, 67);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+                    }
+                    if (isPressed() || isHovered()) {
+                        /*         if ((isPressed()) && backgroundColor.isValid())
+                         *                    { *
+                         *                    painter->setPen(Qt::NoPen);
+                         *                    painter->setBrush(backgroundColor);
+                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
+                    } */
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawLine(QPointF(4.5, 6), QPointF(13.5, 6));
+                        painter->drawLine(QPointF(4.5, 9), QPointF(13.5, 9));
+                        painter->drawLine(QPointF(4.5, 12), QPointF(13.5, 12));
+                    }
+                    break;
+                }
+
+                case DecorationButtonType::ContextHelp:
+                {
+                    QColor baseColor;
+
+                    if ( !isInactive )
+                        baseColor = QColor(230, 129, 67);
+                    else
+                        baseColor = inactiveCol;
+
+                    QRectF r(0,0, 18, 18);
+
+                    // === Paso 1: fondo liso ===
+                    painter->setBrush(baseColor);
+                    painter->setPen(Qt::NoPen);
+                    painter->drawEllipse(r);
+
+                    // ===== 2) Sombra interior radial =====
+                    // Usamos QRadialGradient pero movemos el foco hacia arriba
+                    QRadialGradient radial(
+                        r.center().x(),           // centro del degradado
+                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
+                                           r.width() / 2.0           // radio
+                    );
+                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
+                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
+                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
+                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
+                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
+
+                    painter->setBrush(radial);
+                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                    painter->drawEllipse(r);
+
+                    // === Paso 3: borde sutil ===
+                    QPen border(QColor(0,0,0,100), 1);
+                    painter->setPen(border);
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(r);
+
+                    if (backgroundColor.isValid())
+                    {
+                        QRectF r(0,0, 18, 18);
+
+                        // === Paso 1: fondo liso ===
+                        painter->setBrush(baseColor);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(r);
+
+                        // === Paso 2: sombra interior ===
+                        // Creamos un degradado vertical que simule la luz entrando por abajo
+                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
+                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
+                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
+                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
+
+                        // Usamos composición para "restar luz" (sombra interior)
+                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+                        painter->setBrush(shadowGrad);
+                        painter->drawEllipse(r);
+
+                        // === Paso 3: borde sutil ===
+                        QPen border(QColor(0,0,0,100), 1);
+                        painter->setPen(border);
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(r);
+                    }
+                    if (isPressed() || isHovered()) {
+                        /*         if ((isPressed()) && backgroundColor.isValid())
+                         *                    { * *
+                         *                    painter->setPen(Qt::NoPen);
+                         *                    painter->setBrush(backgroundColor);
+                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
+                    } */
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
+
+                        QPainterPath path;
+                        path.moveTo(5, 6);
+                        path.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
+                        path.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
+                        painter->drawPath(path);
+
+                        painter->drawPoint(9, 15);
+                    }
                     break;
                 }
 
