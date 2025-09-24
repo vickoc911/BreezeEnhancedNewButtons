@@ -4078,15 +4078,15 @@ namespace Breeze
         }
 
         // glow
-        painter.save();
-        painter.setBrush(glowGradient);
-        painter.drawEllipse(r);
+        painter->save();
+        painter->setBrush(glowGradient);
+        painter->drawEllipse(r);
 
         // inside mask
-        painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-        painter.setBrush(Qt::black);
-        painter.drawEllipse(r.adjusted(width + 0.5, width + 0.5, -width - 1, -width - 1));
-        painter.restore();
+        painter->setCompositionMode(QPainter::CompositionMode_DestinationOut);
+        painter->setBrush(Qt::black);
+        painter->drawEllipse(r.adjusted(width + 0.5, width + 0.5, -width - 1, -width - 1));
+        painter->restore();
     }
 
     //___________________________________________________________________________________________
@@ -4106,10 +4106,10 @@ namespace Breeze
         }
 
         shadowGradient.setColorAt(1.0, color.setAlpha(0.0));
-        painter.save();
-        painter.setBrush(shadowGradient);
-        painter.drawEllipse(QRectF(0, 0, size, size));
-        painter.restore();
+        painter->save();
+        painter->setBrush(shadowGradient);
+        painter->drawEllipse(QRectF(0, 0, size, size));
+        painter->restore();
     }
 
     //________________________________________________________________
