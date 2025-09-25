@@ -2994,9 +2994,9 @@ namespace Breeze
                     // text color
                     QColor color = foregroundColor;
 
-                /*    painter->setRenderHints(QPainter::Antialiasing);
+                    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->setWindow(0, 0, 21, 21); */
+                    painter->setWindow(0, 0, 21, 21);
 
                     // button shadow
                     if (color.isValid()) {
@@ -3015,44 +3015,41 @@ namespace Breeze
                     }
 
                     // button slab
-                /*    painter->translate(0, 1);
-                    painter->setWindow(0, 0, 18, 18); */
+                    painter->translate(0, 1);
+                    painter->setWindow(0, 0, 18, 18);
 
-                    if (color.isValid())
+
+                    if (backgroundColor.isValid())
                     {
-                       // QRectF r(0,0, 18, 18);
+                        QRectF r(0,0, 18, 18);
+                        baseColor = backgroundColor;
 
-                     //   painter->translate(0, (0.5 - 0.668));
+                        // --- Degradado principal (radial invertido) ---
+                        QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
+                        base.setColorAt(0.0, baseColor.lighter(110));   // parte baja brillante
+                        base.setColorAt(0.6, baseColor);
+                        base.setColorAt(1.0, baseColor.darker(110));    // borde oscuro
+                        painter->setBrush(base);
+                        painter->setPen(baseColor.darker(140));
+                        painter->drawEllipse(r);
 
-                      //  const QColor light(calcLightColor(color));
-                      //  const QColor dark(calcDarkColor(color));
+                     /*   // --- Highlight superior ovalado (reflejo Aqua) ---
+                        QRectF highlightRect(r.left()+4, r.top()+1, r.width()-8, r.height()/2.5);
+                        QLinearGradient gloss(highlightRect.topLeft(), highlightRect.bottomLeft());
+                        gloss.setColorAt(0.0, QColor(255,255,255,180));
+                        gloss.setColorAt(1.0, QColor(255,255,255,0));
+                        painter->setBrush(gloss);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(highlightRect); */
 
-
-                            // plain background
-                            QLinearGradient lg(0, 1.665, 0, (12.33 + 1.665));
-                            if (sunken) {
-                                lg.setColorAt(1, color.lighter(110));
-                                lg.setColorAt(0, color.darker(110));
-                            } else {
-                                lg.setColorAt(0, color.lighter(110));
-                                lg.setColorAt(1, color.darker(110));
-                            }
-
-                            const QRectF r(0.5 * (18 - 12.33), 1.665, 12.33, 12.33);
-                            painter->setBrush(lg);
-                            painter->drawEllipse(r);
-
-
-                            // outline circle
-                            const qreal penWidth(0.7);
-                            QLinearGradient lgc(0, 1.665, 0, (2.0 * 12.33 + 1.665));
-                            lgc.setColorAt(0, color.lighter(110));
-                            lgc.setColorAt(1, color.darker(110));
-                            const QRectF rc(0.5 * (18 - 12.33 + penWidth), (1.665 + penWidth), (12.33 - penWidth), (12.33 - penWidth));
-                            painter->setPen(QPen(lgc, penWidth));
-                            painter->setBrush(Qt::NoBrush);
-                            painter->drawEllipse(rc);
-
+                        // --- Bisel interior claro ---
+                        QRectF highlightRectb(r.left()+2, r.top()+r.height()/1.9, r.width()-4, r.height()/2.2);
+                        QRadialGradient innerHighlight(r.center(), r.width()/2, r.center());
+                        innerHighlight.setColorAt(0.0, QColor(255, 255, 255, 0));
+                        innerHighlight.setColorAt(1.0, QColor(255, 255, 255, 55));
+                        painter->setBrush(innerHighlight);
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(highlightRectb);
 
                     }
 
@@ -3073,7 +3070,7 @@ namespace Breeze
                     painter->setPen(QPen(color, width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
                     drawIcon(painter);
 
-                    painter->restore();
+                //    painter->restore();
 
                     if (isHovered()) {
                         painter->save();
