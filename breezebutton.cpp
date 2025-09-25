@@ -3007,12 +3007,12 @@ namespace Breeze
                     }
 
                     // button glow
-                 /*   if (glow.isValid()) {
+                    if (glow.isValid()) {
                         painter->save();
                         painter->translate(0, -0.2);
                         drawOuterGlow(painter, glow, 21);
                         painter->restore();
-                    } */
+                    }
 
                     // button slab
                     painter->translate(0, 1);
@@ -3031,11 +3031,11 @@ namespace Breeze
                             // plain background
                             QLinearGradient lg(0, 1.665, 0, (12.33 + 1.665));
                             if (sunken) {
-                                lg.setColorAt(1, color.lighter(150));
-                                lg.setColorAt(0, color.darker(150));
+                                lg.setColorAt(1, color.lighter(110));
+                                lg.setColorAt(0, color.darker(110));
                             } else {
-                                lg.setColorAt(0, color.lighter(150));
-                                lg.setColorAt(1, color.darker(150));
+                                lg.setColorAt(0, color.lighter(110));
+                                lg.setColorAt(1, color.darker(110));
                             }
 
                             const QRectF r(0.5 * (18 - 12.33), 1.665, 12.33, 12.33);
@@ -3047,8 +3047,8 @@ namespace Breeze
                             // outline circle
                             const qreal penWidth(0.7);
                             QLinearGradient lg(0, 1.665, 0, (2.0 * 12.33 + 1.665));
-                            lg.setColorAt(0, color.lighter(150));
-                            lg.setColorAt(1, color.darker(150));
+                            lg.setColorAt(0, color.lighter(110));
+                            lg.setColorAt(1, color.darker(110));
                             const QRectF r(0.5 * (18 - 12.33 + penWidth), (1.665 + penWidth), (12.33 - penWidth), (12.33 - penWidth));
                             painter->setPen(QPen(lg, penWidth));
                             painter->setBrush(Qt::NoBrush);
@@ -3066,7 +3066,7 @@ namespace Breeze
                     // contrast
                     painter->setBrush(Qt::NoBrush);
                     painter->translate(0, 1.5);
-                    painter->setPen(QPen(base.lighter(150), width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                    painter->setPen(QPen(base.lighter(110), width, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
                     drawIcon(painter);
 
                     // main
@@ -4115,9 +4115,8 @@ namespace Breeze
 
     QColor Button::alphaColor(QColor color, qreal alpha) const
     {
-        float coloral = alpha * color.alphaF();
         if (alpha >= 0 && alpha < 1.0) {
-            color.setAlphaF(coloral);
+            color.setAlphaF(alpha * color.alphaF());
         }
         return color;
     }

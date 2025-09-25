@@ -115,6 +115,7 @@ namespace Breeze
         void drawIconMacSymbols( QPainter *) const;
         void drawIconOxygen( QPainter *) const;
 
+
         //* generic outer glow (to be stored in tilesets)
 
         void drawOuterGlow(QPainter *, const QColor&, int size) const;
@@ -122,6 +123,7 @@ namespace Breeze
         //* generic outer shadow (to be stored in tilesets)
         void drawShadow(QPainter *painter, const QColor& color, int value) const;
        // void drawShadow(QPainter *, const QColor&, int size);
+
 
         //*@name colors
         //@{
