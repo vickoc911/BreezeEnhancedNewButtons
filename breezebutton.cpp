@@ -2994,9 +2994,9 @@ namespace Breeze
                     // text color
                     QColor color = foregroundColor;
 
-                    painter->setRenderHints(QPainter::Antialiasing);
+                /*    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->setWindow(0, 0, 21, 21);
+                    painter->setWindow(0, 0, 21, 21); */
 
                     // button shadow
                     if (color.isValid()) {
@@ -3015,19 +3015,19 @@ namespace Breeze
                     }
 
                     // button slab
-                    painter->translate(0, 1);
-                    painter->setWindow(0, 0, 18, 18);
+                /*    painter->translate(0, 1);
+                    painter->setWindow(0, 0, 18, 18); */
 
                     if (color.isValid())
                     {
                         QRectF r(0,0, 18, 18);
 
-                        painter->translate(0, (0.5 - 0.668));
+                     //   painter->translate(0, (0.5 - 0.668));
 
                       //  const QColor light(calcLightColor(color));
                       //  const QColor dark(calcDarkColor(color));
 
-                        {
+
                             // plain background
                             QLinearGradient lg(0, 1.665, 0, (12.33 + 1.665));
                             if (sunken) {
@@ -3041,9 +3041,8 @@ namespace Breeze
                             const QRectF r(0.5 * (18 - 12.33), 1.665, 12.33, 12.33);
                             painter->setBrush(lg);
                             painter->drawEllipse(r);
-                        }
 
-                        {
+
                             // outline circle
                             const qreal penWidth(0.7);
                             QLinearGradient lg(0, 1.665, 0, (2.0 * 12.33 + 1.665));
@@ -3053,13 +3052,13 @@ namespace Breeze
                             painter->setPen(QPen(lg, penWidth));
                             painter->setBrush(Qt::NoBrush);
                             painter->drawEllipse(r);
-                        }
+
 
                     }
 
                     // Icon
-                    painter->setRenderHints(QPainter::Antialiasing);
-                    painter->translate(geometry().topLeft());
+                /*    painter->setRenderHints(QPainter::Antialiasing);
+                    painter->translate(geometry().topLeft());*/
 
                     qreal width(1.2);
 
