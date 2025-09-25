@@ -2980,9 +2980,9 @@ namespace Breeze
                     const bool sunken = isPressed() && isChecked();
 
                     if ( !isInactive )
-                        base = backgroundColor;
+                        baseColor = backgroundColor;
                     else
-                        base = inactiveCol;
+                        baseColor = inactiveCol;
 
                     QColor glow;
                     glow = QColor(255, 92, 87);
@@ -3019,7 +3019,7 @@ namespace Breeze
                     painter->translate(0, 1);
                     painter->setWindow(0, 0, 18, 18);
 
-                    baseColor = backgroundColor;
+                   // baseColor = backgroundColor;
 
                     // --- Degradado principal (radial invertido) ---
                     QRadialGradient base(r.center(), r.width()/2, QPointF(r.center().x(), r.bottom()));
