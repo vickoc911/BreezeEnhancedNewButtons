@@ -2995,7 +2995,7 @@ namespace Breeze
                     // text color
                     QColor color = foregroundColor;
 
-                    painter->setRenderHints(QPainter::Antialiasing);
+                 /*   painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
                     painter->setWindow(0, 0, 21, 21);
 
@@ -3017,7 +3017,7 @@ namespace Breeze
 
                     // button slab
                     painter->translate(0, 1);
-                    painter->setWindow(0, 0, 18, 18);
+                    painter->setWindow(0, 0, 18, 18); */
 
                    // baseColor = backgroundColor;
 
