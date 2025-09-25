@@ -2976,6 +2976,7 @@ namespace Breeze
                 {
 
                     QColor base;
+                    QColor baseColor;
                     const bool sunken = isPressed() && isChecked();
 
                     if ( !isInactive )
