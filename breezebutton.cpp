@@ -4113,7 +4113,7 @@ namespace Breeze
     }
 
 
-    QColor Button::alphaColor(QColor color, qreal alpha)
+    QColor Button::alphaColor(const QColor& color, qreal alpha)
     {
         if (alpha >= 0 && alpha < 1.0) {
             color.setAlphaF(alpha * color.alphaF());

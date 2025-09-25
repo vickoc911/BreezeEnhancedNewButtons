@@ -125,7 +125,7 @@ namespace Breeze
 
         //*@name colors
         //@{
-        QColor alphaColor(const QColor&, qreal);
+        QColor alphaColor(const QColor& color, qreal alpha);
         QColor foregroundColor(const QColor& inactiveCol) const;
         QColor backgroundColor() const;
 
