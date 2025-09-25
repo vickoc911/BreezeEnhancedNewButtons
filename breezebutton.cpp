@@ -4054,7 +4054,7 @@ namespace Breeze
     }
 
     //_______________________________________________________________________
-    void Button::drawOuterGlow(QPainter *painter, const QColor &color, int size)
+    void Button::drawOuterGlow(QPainter *painter, const QColor &color, int size) const
     {
         const QRectF r(0, 0, size, size);
         const qreal m(qreal(size) * 0.5);
@@ -4090,7 +4090,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________
-    void Button::drawShadow(QPainter *painter, const QColor &color, int size)
+    void Button::drawShadow(QPainter *painter, const QColor &color, int size) const
     {
         const qreal m(qreal(size - 2) * 0.5);
         const qreal offset(0.8);
