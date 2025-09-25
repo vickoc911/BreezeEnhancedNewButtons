@@ -3020,7 +3020,7 @@ namespace Breeze
 
                     if (color.isValid())
                     {
-                        QRectF r(0,0, 18, 18);
+                       // QRectF r(0,0, 18, 18);
 
                      //   painter->translate(0, (0.5 - 0.668));
 
@@ -3045,13 +3045,13 @@ namespace Breeze
 
                             // outline circle
                             const qreal penWidth(0.7);
-                            QLinearGradient lg(0, 1.665, 0, (2.0 * 12.33 + 1.665));
-                            lg.setColorAt(0, color.lighter(110));
-                            lg.setColorAt(1, color.darker(110));
-                            const QRectF r(0.5 * (18 - 12.33 + penWidth), (1.665 + penWidth), (12.33 - penWidth), (12.33 - penWidth));
-                            painter->setPen(QPen(lg, penWidth));
+                            QLinearGradient lgc(0, 1.665, 0, (2.0 * 12.33 + 1.665));
+                            lgc.setColorAt(0, color.lighter(110));
+                            lgc.setColorAt(1, color.darker(110));
+                            const QRectF rc(0.5 * (18 - 12.33 + penWidth), (1.665 + penWidth), (12.33 - penWidth), (12.33 - penWidth));
+                            painter->setPen(QPen(lgc, penWidth));
                             painter->setBrush(Qt::NoBrush);
-                            painter->drawEllipse(r);
+                            painter->drawEllipse(rc);
 
 
                     }
