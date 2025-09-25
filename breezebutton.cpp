@@ -2975,7 +2975,7 @@ namespace Breeze
                 case DecorationButtonType::Close:
                 {
 
-                    QColor base;
+              //      QColor base;
                     QColor baseColor;
                     const bool sunken = isPressed() && isChecked();
 
