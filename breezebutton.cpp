@@ -773,12 +773,9 @@ namespace Breeze
         const QColor foregroundColor(this->foregroundColor(inactiveCol));
         if (foregroundColor.isValid())
         {
-
             // setup painter
             QPen pen(symbolColor);
-            pen.setCapStyle(Qt::RoundCap);
-            pen.setJoinStyle(Qt::MiterJoin);
-            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
+            pen.setWidthF(qMax(1.8 * 21 / width, pen.widthF()));
 
             switch (type())
             {
@@ -1628,9 +1625,7 @@ namespace Breeze
 
             // setup painter
             QPen pen(symbolColor);
-            pen.setCapStyle(Qt::RoundCap);
-            pen.setJoinStyle(Qt::MiterJoin);
-            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
+            pen.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
             switch (type())
             {
@@ -2452,9 +2447,7 @@ namespace Breeze
 
             // setup painter
             QPen pen(symbolColor);
-            pen.setCapStyle(Qt::RoundCap);
-            pen.setJoinStyle(Qt::MiterJoin);
-            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
+            pen.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
             switch (type())
             {
@@ -2970,7 +2963,7 @@ namespace Breeze
             QColor color1;
             QColor symbolColor;
             QColor symbolColor1;
-            const bool sunken = isPressed() && isChecked();
+            const bool sunken = isPressed() || isChecked();
 
             if (d && qGray(d->titleBarColor().rgb()) > 130)
             {
@@ -2989,9 +2982,9 @@ namespace Breeze
 
             // setup painter
             QPen pen(symbolColor);
-            pen.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
+            pen.setWidthF(qMax(1.5 * 21 / width, pen.widthF()));
             QPen pens(symbolColor1);
-            pens.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
+            pens.setWidthF(qMax(1.5 * 21 / width, pen.widthF()));
 
             switch (type())
             {
@@ -2999,15 +2992,15 @@ namespace Breeze
                 case DecorationButtonType::Close:
                 {
                     QColor glow;
-                    glow = QColor(255, 92, 87);
+                    glow = QColor(191, 3, 3);
                     QPen penGlow(glow);
-                    penGlow.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
+                    penGlow.setWidthF(qMax(1.5 * 21 / width, pen.widthF()));
 
                     painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
 
                     // button shadow
-                    if (color.isValid()) {
+                    if (!isHovered()) {
                         painter->save();
                         drawShadow(painter, Qt::black, 21);
                         painter->restore();
@@ -3019,9 +3012,8 @@ namespace Breeze
                         drawOuterGlow(painter, glow, 21);
                         painter->restore();
                     }
-                    painter->save();
                     // plain background
-                    QLinearGradient lg(0, 2.7, 0 , (14.5 + 2.7));
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
                     if (sunken) {
                         lg.setColorAt(1, color);
                         lg.setColorAt(0, color1.darker(130));
@@ -3030,26 +3022,25 @@ namespace Breeze
                         lg.setColorAt(1, color1.darker(130));
                     }
 
-                    const QRectF r(3, 2.7, 14.5, 14.5);
+                    const QRectF r(3.3, 3, 14.5, 14.5);
                     painter->setBrush(lg);
                     painter->drawEllipse(r);
 
 
                     // outline circle
-                    const qreal penWidth(0.7);
-                    QLinearGradient lgc(0, 2.7, 0, (2.0 * 14.5 + 2.7));
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
                     lgc.setColorAt(0, color.lighter(110));
                     lgc.setColorAt(1, color.darker(110));
-                    const QRectF rc(3 + penWidth, (2.7 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
                     painter->setPen(QPen(lgc, penWidth));
                     painter->setBrush(Qt::NoBrush);
                     painter->drawEllipse(rc);
-                    painter->restore();
 
                     if (foregroundColor.isValid())
                     {
-                        painter->save();
-                        QLinearGradient lg(0, 2.7, 0 , (14.5 + 2.7));
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 3));
                         if (sunken) {
                             lg.setColorAt(1, color);
                             lg.setColorAt(0, color1.darker(130));
@@ -3058,23 +3049,21 @@ namespace Breeze
                             lg.setColorAt(1, color1.darker(130));
                         }
 
-                        const QRectF r(3, 2.7, 14.5, 14.5);
+                        const QRectF r(3.3, 3, 14.5, 14.5);
                         painter->setBrush(lg);
                         painter->drawEllipse(r);
 
+
                         // outline circle
-                        const qreal penWidth(0.7);
-                        QLinearGradient lgc(0, 2.7, 0, (2.0 * 14.5 + 2.7));
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
                         lgc.setColorAt(0, color.lighter(110));
                         lgc.setColorAt(1, color.darker(110));
-                        const QRectF rc(3 + penWidth, (2.7 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
                         painter->setPen(QPen(lgc, penWidth));
                         painter->setBrush(Qt::NoBrush);
                         painter->drawEllipse(rc);
-                        painter->restore();
-
                     }
-                    painter->save();
                     painter->setPen(pens);
                     painter->setBrush(symbolColor1);
                     painter->drawLine(QPointF(8.5, 8.5), QPointF(14.5, 14.5));
@@ -3084,15 +3073,12 @@ namespace Breeze
                     painter->setBrush(symbolColor);
                     painter->drawLine(QPointF(7.5, 7.5), QPointF(13.5, 13.5));
                     painter->drawLine(QPointF(13.5, 7.5), QPointF(7.5, 13.5));
-                    painter->restore();
 
                     if (isHovered()) {
-                        painter->save();
                         painter->setPen(penGlow);
                         painter->setBrush(glow);
                         painter->drawLine(QPointF(7.5, 7.5), QPointF(13.5, 13.5));
                         painter->drawLine(QPointF(13.5, 7.5), QPointF(7.5, 13.5));
-                        painter->restore();
                     }
 
                     break;
@@ -3109,7 +3095,7 @@ namespace Breeze
                     painter->setPen(Qt::NoPen);
 
                     // button shadow
-                    if (color.isValid()) {
+                    if (!isHovered()) {
                         painter->save();
                         drawShadow(painter, Qt::black, 21);
                         painter->restore();
@@ -3121,9 +3107,8 @@ namespace Breeze
                         drawOuterGlow(painter, glow, 21);
                         painter->restore();
                     }
-                    painter->save();
                     // plain background
-                    QLinearGradient lg(0, 2.7, 0 , (14.5 + 2.7));
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
                     if (sunken) {
                         lg.setColorAt(1, color);
                         lg.setColorAt(0, color1.darker(130));
@@ -3132,26 +3117,25 @@ namespace Breeze
                         lg.setColorAt(1, color1.darker(130));
                     }
 
-                    const QRectF r(3, 2.7, 14.5, 14.5);
+                    const QRectF r(3.3, 3, 14.5, 14.5);
                     painter->setBrush(lg);
                     painter->drawEllipse(r);
 
 
                     // outline circle
-                    const qreal penWidth(0.7);
-                    QLinearGradient lgc(0, 2.7, 0, (2.0 * 14.5 + 2.7));
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
                     lgc.setColorAt(0, color.lighter(110));
                     lgc.setColorAt(1, color.darker(110));
-                    const QRectF rc(3 + penWidth, (2.7 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
                     painter->setPen(QPen(lgc, penWidth));
                     painter->setBrush(Qt::NoBrush);
                     painter->drawEllipse(rc);
-                    painter->restore();
 
                     if (foregroundColor.isValid())
                     {
-                        painter->save();
-                        QLinearGradient lg(0, 2.7, 0 , (14.5 + 2.7));
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 3));
                         if (sunken) {
                             lg.setColorAt(1, color);
                             lg.setColorAt(0, color1.darker(130));
@@ -3160,38 +3144,48 @@ namespace Breeze
                             lg.setColorAt(1, color1.darker(130));
                         }
 
-                        const QRectF r(3, 2.7, 14.5, 14.5);
+                        const QRectF r(3.3, 3, 14.5, 14.5);
                         painter->setBrush(lg);
                         painter->drawEllipse(r);
 
+
                         // outline circle
-                        const qreal penWidth(0.7);
-                        QLinearGradient lgc(0, 2.7, 0, (2.0 * 14.5 + 2.7));
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
                         lgc.setColorAt(0, color.lighter(110));
                         lgc.setColorAt(1, color.darker(110));
-                        const QRectF rc(3 + penWidth, (2.7 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
                         painter->setPen(QPen(lgc, penWidth));
                         painter->setBrush(Qt::NoBrush);
                         painter->drawEllipse(rc);
-                        painter->restore();
-
                     }
-                    painter->save();
                     painter->setPen(pens);
                     painter->setBrush(symbolColor1);
-                    painter->drawPolygon(QPolygonF() << QPointF(8.5, 11.5) << QPointF(11.5, 8.5) << QPointF(14.5, 11.5) << QPointF(11.5, 14.5));
+                    if (decoration()->window()->isMaximized()) {
+                        painter->drawPolygon(QPolygonF() << QPointF(8.5, 11.5) << QPointF(11.5, 8.5) << QPointF(14.5, 11.5) << QPointF(11.5, 14.5));
+
+                    } else {
+                        painter->drawPolyline(QPolygonF() << QPointF(8.5, 12.5) << QPointF(11.5, 9.5) << QPointF(14.5, 12.5));
+                    }
 
                     painter->setPen(pen);
                     painter->setBrush(symbolColor);
-                    painter->drawPolygon(QPolygonF() << QPointF(7.5, 10.5) << QPointF(10.5, 7.5) << QPointF(13.5, 10.5) << QPointF(10.5, 13.5));
-                    painter->restore();
+                    if (decoration()->window()->isMaximized()) {
+                        painter->drawPolygon(QPolygonF() << QPointF(7.5, 10.5) << QPointF(10.5, 7.5) << QPointF(13.5, 10.5) << QPointF(10.5, 13.5));
+
+                    } else {
+                        painter->drawPolyline(QPolygonF() << QPointF(7.5, 11.5) << QPointF(10.5, 8.5) << QPointF(13.5, 11.5));
+                    }
 
                     if (isHovered()) {
-                        painter->save();
                         painter->setPen(penGlow);
                         painter->setBrush(glow);
-                        painter->drawPolygon(QPolygonF() << QPointF(7.5, 10.5) << QPointF(10.5, 7.5) << QPointF(13.5, 10.5) << QPointF(10.5, 13.5));
-                        painter->restore();
+                        if (decoration()->window()->isMaximized()) {
+                            painter->drawPolygon(QPolygonF() << QPointF(7.5, 10.5) << QPointF(10.5, 7.5) << QPointF(13.5, 10.5) << QPointF(10.5, 13.5));
+
+                        } else {
+                            painter->drawPolyline(QPolygonF() << QPointF(7.5, 11.5) << QPointF(10.5, 8.5) << QPointF(13.5, 11.5));
+                        }
                     }
 
                     break;
@@ -3220,9 +3214,8 @@ namespace Breeze
                         drawOuterGlow(painter, glow, 21);
                         painter->restore();
                     }
-                    painter->save();
                     // plain background
-                    QLinearGradient lg(0, 2.7, 0 , (14.5 + 2.7));
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
                     if (sunken) {
                         lg.setColorAt(1, color);
                         lg.setColorAt(0, color1.darker(130));
@@ -3231,26 +3224,25 @@ namespace Breeze
                         lg.setColorAt(1, color1.darker(130));
                     }
 
-                    const QRectF r(3, 2.7, 14.5, 14.5);
+                    const QRectF r(3.3, 3, 14.5, 14.5);
                     painter->setBrush(lg);
                     painter->drawEllipse(r);
 
 
                     // outline circle
-                    const qreal penWidth(0.7);
-                    QLinearGradient lgc(0, 2.7, 0, (2.0 * 14.5 + 2.7));
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
                     lgc.setColorAt(0, color.lighter(110));
                     lgc.setColorAt(1, color.darker(110));
-                    const QRectF rc(3 + penWidth, (2.7 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
                     painter->setPen(QPen(lgc, penWidth));
                     painter->setBrush(Qt::NoBrush);
                     painter->drawEllipse(rc);
-                    painter->restore();
 
                     if (foregroundColor.isValid())
                     {
-                        painter->save();
-                        QLinearGradient lg(0, 2.7, 0 , (14.5 + 2.7));
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 3));
                         if (sunken) {
                             lg.setColorAt(1, color);
                             lg.setColorAt(0, color1.darker(130));
@@ -3259,23 +3251,21 @@ namespace Breeze
                             lg.setColorAt(1, color1.darker(130));
                         }
 
-                        const QRectF r(3, 2.7, 14.5, 14.5);
+                        const QRectF r(3.3, 3, 14.5, 14.5);
                         painter->setBrush(lg);
                         painter->drawEllipse(r);
 
+
                         // outline circle
-                        const qreal penWidth(0.7);
-                        QLinearGradient lgc(0, 2.7, 0, (2.0 * 14.5 + 2.7));
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
                         lgc.setColorAt(0, color.lighter(110));
                         lgc.setColorAt(1, color.darker(110));
-                        const QRectF rc(3 + penWidth, (2.7 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
                         painter->setPen(QPen(lgc, penWidth));
                         painter->setBrush(Qt::NoBrush);
                         painter->drawEllipse(rc);
-                        painter->restore();
-
                     }
-                    painter->save();
                     painter->setPen(pens);
                     painter->setBrush(symbolColor1);
                     painter->drawPolyline(QPolygonF() << QPointF(8.5, 10.5) << QPointF(11.5, 13.5) << QPointF(14.5, 10.5));
@@ -3283,266 +3273,196 @@ namespace Breeze
                     painter->setPen(pen);
                     painter->setBrush(symbolColor);
                     painter->drawPolyline(QPolygonF() << QPointF(7.5, 9.5) << QPointF(10.5, 12.5) << QPointF(13.5, 9.5));
-                    painter->restore();
 
                     if (isHovered()) {
-                        painter->save();
                         painter->setPen(penGlow);
                         painter->setBrush(glow);
                         painter->drawPolyline(QPolygonF() << QPointF(7.5, 9.5) << QPointF(10.5, 12.5) << QPointF(13.5, 9.5));
-                        painter->restore();
                     }
                     break;
                 }
 
                 case DecorationButtonType::OnAllDesktops:
                 {
-                    QColor baseColor;
+                    QColor glow;
+                    glow = QColor(142, 203, 233);
+                    QPen penGlow(glow);
+                    penGlow.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
-                    if ( !isInactive )
-                        baseColor = QColor(132, 165, 202);
-                    else
-                        baseColor = inactiveCol;
-
-                    QRectF r(0,0, 18, 18);
-
-                    // === Paso 1: fondo liso ===
-                    painter->setBrush(baseColor);
+                    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(r);
 
-                    // ===== 2) Sombra interior radial =====
-                    // Usamos QRadialGradient pero movemos el foco hacia arriba
-                    QRadialGradient radial(
-                        r.center().x(),           // centro del degradado
-                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
-                                           r.width() / 2.0           // radio
-                    );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
-
-                    painter->setBrush(radial);
-                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(r);
-
-                    // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,100), 1);
-                    painter->setPen(border);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
-
-                    if (backgroundColor.isValid())
-                    {
-                        QRectF r(0,0, 18, 18);
-
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
-
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,100), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                    // button shadow
+                    if (color.isValid()) {
+                        painter->save();
+                        drawShadow(painter, Qt::black, 21);
+                        painter->restore();
                     }
-                    if (isPressed() || isHovered() || isChecked()) {
-                        /*         if ((isPressed()) && backgroundColor.isValid())
-                         *                    { * * *
-                         *                    painter->setPen(Qt::NoPen);
-                         *                    painter->setBrush(backgroundColor);
-                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
-                    } */
-                        painter->setPen(pen);
+
+                    // button shadow
+                    if (isHovered()) {
+                        painter->save();
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+                    }
+                    // plain background
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
+                    if (sunken) {
+                        lg.setColorAt(1, color);
+                        lg.setColorAt(0, color1.darker(130));
+                    } else {
+                        lg.setColorAt(0, color);
+                        lg.setColorAt(1, color1.darker(130));
+                    }
+
+                    const QRectF r(3.3, 3, 14.5, 14.5);
+                    painter->setBrush(lg);
+                    painter->drawEllipse(r);
+
+
+                    // outline circle
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
+                    lgc.setColorAt(0, color.lighter(110));
+                    lgc.setColorAt(1, color.darker(110));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    painter->setPen(QPen(lgc, penWidth));
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(rc);
+
+                    if (foregroundColor.isValid())
+                    {
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 3));
+                        if (sunken) {
+                            lg.setColorAt(1, color);
+                            lg.setColorAt(0, color1.darker(130));
+                        } else {
+                            lg.setColorAt(0, color);
+                            lg.setColorAt(1, color1.darker(130));
+                        }
+
+                        const QRectF r(3.3, 3, 14.5, 14.5);
+                        painter->setBrush(lg);
+                        painter->drawEllipse(r);
+
+
+                        // outline circle
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
+                        lgc.setColorAt(0, color.lighter(110));
+                        lgc.setColorAt(1, color.darker(110));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        painter->setPen(QPen(lgc, penWidth));
                         painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(QRectF(6, 6, 6, 6));
+                        painter->drawEllipse(rc);
+                    }
+                    painter->setPen(pens);
+                    painter->setBrush(symbolColor1);
+                    painter->drawPoint(QPointF(11.5, 11.5));
+
+                    painter->setPen(pen);
+                    painter->setBrush(symbolColor);
+                    painter->drawPoint(QPointF(10.5, 10.5));
+
+                    if (isHovered()) {
+                        painter->setPen(penGlow);
+                        painter->setBrush(glow);
+                        painter->drawPoint(QPointF(10.5, 10.5));
                     }
                     break;
-                }
-
-                case DecorationButtonType::Shade:
-                {
-                    QColor baseColor;
-
-                    if ( !isInactive )
-                        baseColor = QColor(132, 165, 202);
-                    else
-                        baseColor = inactiveCol;
-
-                    QRectF r(0,0, 18, 18);
-
-                    // === Paso 1: fondo liso ===
-                    painter->setBrush(baseColor);
-                    painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(r);
-
-                    // ===== 2) Sombra interior radial =====
-                    // Usamos QRadialGradient pero movemos el foco hacia arriba
-                    QRadialGradient radial(
-                        r.center().x(),           // centro del degradado
-                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
-                                           r.width() / 2.0           // radio
-                    );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
-
-                    painter->setBrush(radial);
-                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(r);
-
-                    // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,100), 1);
-                    painter->setPen(border);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
-
-                    if (backgroundColor.isValid())
-                    {
-                        QRectF r(0,0, 18, 18);
-
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
-
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,100), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
-                    }
-                    if (isPressed() || isHovered() || isChecked()) {
-                        /*         if ((isPressed()) && backgroundColor.isValid())
-                         *                    { * *
-                         *                    painter->setPen(Qt::NoPen);
-                         *                    painter->setBrush(backgroundColor);
-                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
-                    } */
-                        painter->setPen(pen);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawPolyline(QPolygonF()
-                        << QPointF(5, 13)
-                        << QPointF(9, 9)
-                        << QPointF(13, 13));
-                    }
-                    break;
-
                 }
 
                 case DecorationButtonType::KeepBelow:
                 {
-                    QColor baseColor;
+                    QColor glow;
+                    glow = QColor(142, 203, 233);
+                    QPen penGlow(glow);
+                    penGlow.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
-                    if ( !isInactive )
-                        baseColor = QColor(132, 165, 202);
-                    else
-                        baseColor = inactiveCol;
-
-                    QRectF r(0,0, 18, 18);
-
-                    // === Paso 1: fondo liso ===
-                    painter->setBrush(baseColor);
+                    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(r);
 
-                    // ===== 2) Sombra interior radial =====
-                    // Usamos QRadialGradient pero movemos el foco hacia arriba
-                    QRadialGradient radial(
-                        r.center().x(),           // centro del degradado
-                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
-                                           r.width() / 2.0           // radio
-                    );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
-
-                    painter->setBrush(radial);
-                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(r);
-
-                    // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,100), 1);
-                    painter->setPen(border);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
-
-                    if (backgroundColor.isValid())
-                    {
-                        QRectF r(0,0, 18, 18);
-
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
-
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,100), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                    // button shadow
+                    if (color.isValid()) {
+                        painter->save();
+                        drawShadow(painter, Qt::black, 21);
+                        painter->restore();
                     }
-                    if (isPressed() || isHovered() || isChecked()) {
-                        /*         if ((isPressed()) && backgroundColor.isValid())
-                         *                    { *
-                         *                    painter->setPen(Qt::NoPen);
-                         *                    painter->setBrush(backgroundColor);
-                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
-                    } */
-                        painter->setPen(pen);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawPolyline(QPolygonF()
-                        << QPointF(6, 6)
-                        << QPointF(9, 9)
-                        << QPointF(12, 6));
 
-                        painter->drawPolyline(QPolygonF()
-                        << QPointF(6, 10)
-                        << QPointF(9, 13)
-                        << QPointF(12, 10));
+                    // button shadow
+                    if (isHovered()) {
+                        painter->save();
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+                    }
+                    // plain background
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
+                    if (sunken) {
+                        lg.setColorAt(1, color);
+                        lg.setColorAt(0, color1.darker(130));
+                    } else {
+                        lg.setColorAt(0, color);
+                        lg.setColorAt(1, color1.darker(130));
+                    }
+
+                    const QRectF r(3.3, 3, 14.5, 14.5);
+                    painter->setBrush(lg);
+                    painter->drawEllipse(r);
+
+
+                    // outline circle
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 2.7));
+                    lgc.setColorAt(0, color.lighter(110));
+                    lgc.setColorAt(1, color.darker(110));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    painter->setPen(QPen(lgc, penWidth));
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(rc);
+
+                    if (foregroundColor.isValid())
+                    {
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 2.7));
+                        if (sunken) {
+                            lg.setColorAt(1, color);
+                            lg.setColorAt(0, color1.darker(130));
+                        } else {
+                            lg.setColorAt(0, color);
+                            lg.setColorAt(1, color1.darker(130));
+                        }
+
+                        const QRectF r(3.3, 3, 14.5, 14.5);
+                        painter->setBrush(lg);
+                        painter->drawEllipse(r);
+
+
+                        // outline circle
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
+                        lgc.setColorAt(0, color.lighter(110));
+                        lgc.setColorAt(1, color.darker(110));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        painter->setPen(QPen(lgc, penWidth));
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(rc);
+                    }
+                    painter->setPen(pens);
+                    painter->setBrush(symbolColor1);
+                    painter->drawPolyline(QPolygonF() << QPointF(8.5, 12) << QPointF(11.5, 15) << QPointF(14.5, 12));
+                    painter->drawPolyline(QPolygonF() << QPointF(8.5, 8) << QPointF(11.5, 11) << QPointF(14.5, 8));
+
+                    painter->setPen(pen);
+                    painter->setBrush(symbolColor);
+                    painter->drawPolyline(QPolygonF() << QPointF(7.5, 11) << QPointF(10.5, 14) << QPointF(13.5, 11));
+                    painter->drawPolyline(QPolygonF() << QPointF(7.5, 7) << QPointF(10.5, 10) << QPointF(13.5, 7));
+
+                    if (isHovered()) {
+                        painter->setPen(penGlow);
+                        painter->setBrush(glow);
+                        painter->drawPolyline(QPolygonF() << QPointF(7.5, 11) << QPointF(10.5, 14) << QPointF(13.5, 11));
+                        painter->drawPolyline(QPolygonF() << QPointF(7.5, 7) << QPointF(10.5, 10) << QPointF(13.5, 7));
                     }
                     break;
 
@@ -3550,88 +3470,94 @@ namespace Breeze
 
                 case DecorationButtonType::KeepAbove:
                 {
-                    QColor baseColor;
+                    QColor glow;
+                    glow = QColor(142, 203, 233);
+                    QPen penGlow(glow);
+                    penGlow.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
-                    if ( !isInactive )
-                        baseColor = QColor(132, 165, 202);
-                    else
-                        baseColor = inactiveCol;
-
-                    QRectF r(0,0, 18, 18);
-
-                    // === Paso 1: fondo liso ===
-                    painter->setBrush(baseColor);
+                    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(r);
 
-                    // ===== 2) Sombra interior radial =====
-                    // Usamos QRadialGradient pero movemos el foco hacia arriba
-                    QRadialGradient radial(
-                        r.center().x(),           // centro del degradado
-                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
-                                           r.width() / 2.0           // radio
-                    );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
-
-                    painter->setBrush(radial);
-                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(r);
-
-                    // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,100), 1);
-                    painter->setPen(border);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
-
-                    if (backgroundColor.isValid())
-                    {
-                        QRectF r(0,0, 18, 18);
-
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
-
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,100), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                    // button shadow
+                    if (color.isValid()) {
+                        painter->save();
+                        drawShadow(painter, Qt::black, 21);
+                        painter->restore();
                     }
-                    if (isPressed() || isHovered() || isChecked()) {
-                        /*         if ((isPressed()) && backgroundColor.isValid())
-                         *                   {
-                         *                       painter->setPen(Qt::NoPen);
-                         *                       painter->setBrush(backgroundColor);
-                         *                       painter->drawEllipse(QRectF(0, 0, 18, 18));
-                    } */
-                        painter->setPen(pen);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawPolyline(QPolygonF()
-                        << QPointF(6, 8)
-                        << QPointF(9, 5)
-                        << QPointF(12, 8));
 
-                        painter->drawPolyline(QPolygonF()
-                        << QPointF(6, 12)
-                        << QPointF(9, 9)
-                        << QPointF(12, 12));
+                    // button shadow
+                    if (isHovered()) {
+                        painter->save();
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+                    }
+                    // plain background
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
+                    if (sunken) {
+                        lg.setColorAt(1, color);
+                        lg.setColorAt(0, color1.darker(130));
+                    } else {
+                        lg.setColorAt(0, color);
+                        lg.setColorAt(1, color1.darker(130));
+                    }
+
+                    const QRectF r(3.3, 3, 14.5, 14.5);
+                    painter->setBrush(lg);
+                    painter->drawEllipse(r);
+
+
+                    // outline circle
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 2.7));
+                    lgc.setColorAt(0, color.lighter(110));
+                    lgc.setColorAt(1, color.darker(110));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    painter->setPen(QPen(lgc, penWidth));
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(rc);
+
+                    if (foregroundColor.isValid())
+                    {
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 2.7));
+                        if (sunken) {
+                            lg.setColorAt(1, color);
+                            lg.setColorAt(0, color1.darker(130));
+                        } else {
+                            lg.setColorAt(0, color);
+                            lg.setColorAt(1, color1.darker(130));
+                        }
+
+                        const QRectF r(3.3, 3, 14.5, 14.5);
+                        painter->setBrush(lg);
+                        painter->drawEllipse(r);
+
+
+                        // outline circle
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
+                        lgc.setColorAt(0, color.lighter(110));
+                        lgc.setColorAt(1, color.darker(110));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        painter->setPen(QPen(lgc, penWidth));
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(rc);
+                    }
+                    painter->setPen(pens);
+                    painter->setBrush(symbolColor1);
+                    painter->drawPolyline(QPolygonF() << QPointF(8.5, 15) << QPointF(11.5, 11) << QPointF(14.5, 15));
+                    painter->drawPolyline(QPolygonF() << QPointF(8.5, 11) << QPointF(11.5, 7) << QPointF(14.5, 11));
+
+                    painter->setPen(pen);
+                    painter->setBrush(symbolColor);
+                    painter->drawPolyline(QPolygonF() << QPointF(7.5, 14) << QPointF(10.5, 11) << QPointF(13.5, 14));
+                    painter->drawPolyline(QPolygonF() << QPointF(7.5, 10) << QPointF(10.5, 7) << QPointF(13.5, 10));
+
+                    if (isHovered()) {
+                        painter->setPen(penGlow);
+                        painter->setBrush(glow);
+                        painter->drawPolyline(QPolygonF() << QPointF(7.5, 14) << QPointF(10.5, 11) << QPointF(13.5, 14));
+                        painter->drawPolyline(QPolygonF() << QPointF(7.5, 10) << QPointF(10.5, 7) << QPointF(13.5, 10));
                     }
                     break;
                 }
@@ -3639,167 +3565,202 @@ namespace Breeze
 
                 case DecorationButtonType::ApplicationMenu:
                 {
-                    QColor baseColor;
+                    QColor glow;
+                    glow = QColor(142, 203, 233);
+                    QPen penGlow(glow);
+                    penGlow.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
-                    if ( !isInactive )
-                        baseColor = QColor(230, 129, 67);
-                    else
-                        baseColor = inactiveCol;
-
-                    QRectF r(0,0, 18, 18);
-
-                    // === Paso 1: fondo liso ===
-                    painter->setBrush(baseColor);
+                    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(r);
 
-                    // ===== 2) Sombra interior radial =====
-                    // Usamos QRadialGradient pero movemos el foco hacia arriba
-                    QRadialGradient radial(
-                        r.center().x(),           // centro del degradado
-                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
-                                           r.width() / 2.0           // radio
-                    );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
-
-                    painter->setBrush(radial);
-                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(r);
-
-                    // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,100), 1);
-                    painter->setPen(border);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
-
-                    if (backgroundColor.isValid())
-                    {
-                        QRectF r(0,0, 18, 18);
-
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
-
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,100), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                    // button shadow
+                    if (color.isValid()) {
+                        painter->save();
+                        drawShadow(painter, Qt::black, 21);
+                        painter->restore();
                     }
-                    if (isPressed() || isHovered()) {
-                        /*         if ((isPressed()) && backgroundColor.isValid())
-                         *                    { *
-                         *                    painter->setPen(Qt::NoPen);
-                         *                    painter->setBrush(backgroundColor);
-                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
-                    } */
-                        painter->setPen(pen);
+
+                    // button shadow
+                    if (isHovered()) {
+                        painter->save();
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+                    }
+                    // plain background
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
+                    if (sunken) {
+                        lg.setColorAt(1, color);
+                        lg.setColorAt(0, color1.darker(130));
+                    } else {
+                        lg.setColorAt(0, color);
+                        lg.setColorAt(1, color1.darker(130));
+                    }
+
+                    const QRectF r(3.3, 3, 14.5, 14.5);
+                    painter->setBrush(lg);
+                    painter->drawEllipse(r);
+
+
+                    // outline circle
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 2.7));
+                    lgc.setColorAt(0, color.lighter(110));
+                    lgc.setColorAt(1, color.darker(110));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    painter->setPen(QPen(lgc, penWidth));
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(rc);
+
+                    if (foregroundColor.isValid())
+                    {
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 2.7));
+                        if (sunken) {
+                            lg.setColorAt(1, color);
+                            lg.setColorAt(0, color1.darker(130));
+                        } else {
+                            lg.setColorAt(0, color);
+                            lg.setColorAt(1, color1.darker(130));
+                        }
+
+                        const QRectF r(3.3, 3, 14.5, 14.5);
+                        painter->setBrush(lg);
+                        painter->drawEllipse(r);
+
+
+                        // outline circle
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
+                        lgc.setColorAt(0, color.lighter(110));
+                        lgc.setColorAt(1, color.darker(110));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        painter->setPen(QPen(lgc, penWidth));
                         painter->setBrush(Qt::NoBrush);
-                        painter->drawLine(QPointF(4.5, 6), QPointF(13.5, 6));
-                        painter->drawLine(QPointF(4.5, 9), QPointF(13.5, 9));
-                        painter->drawLine(QPointF(4.5, 12), QPointF(13.5, 12));
+                        painter->drawEllipse(rc);
+                    }
+                    painter->setPen(pens);
+                    painter->setBrush(symbolColor1);
+                    painter->drawLine(QPointF(8.5, 8), QPointF(14.5, 8));
+                    painter->drawLine(QPointF(8.5, 11), QPointF(14.5, 11));
+                    painter->drawLine(QPointF(8.5, 14), QPointF(14.5, 14));
+
+                    painter->setPen(pen);
+                    painter->setBrush(symbolColor);
+                    painter->drawLine(QPointF(7.5, 8), QPointF(13.5, 8));
+                    painter->drawLine(QPointF(7.5, 11), QPointF(13.5, 11));
+                    painter->drawLine(QPointF(7.5, 14), QPointF(13.5, 14));
+                    if (isHovered()) {
+                        painter->setPen(penGlow);
+                        painter->setBrush(glow);
+                        painter->drawLine(QPointF(7.5, 8), QPointF(13.5, 8));
+                        painter->drawLine(QPointF(7.5, 11), QPointF(13.5, 11));
+                        painter->drawLine(QPointF(7.5, 14), QPointF(13.5, 14));
                     }
                     break;
                 }
 
                 case DecorationButtonType::ContextHelp:
                 {
-                    QColor baseColor;
+                    QColor glow;
+                    glow = QColor(142, 203, 233);
+                    QPen penGlow(glow);
+                    penGlow.setWidthF(qMax(2.1 * 21 / width, pen.widthF()));
 
-                    if ( !isInactive )
-                        baseColor = QColor(230, 129, 67);
-                    else
-                        baseColor = inactiveCol;
-
-                    QRectF r(0,0, 18, 18);
-
-                    // === Paso 1: fondo liso ===
-                    painter->setBrush(baseColor);
+                    painter->setRenderHints(QPainter::Antialiasing);
                     painter->setPen(Qt::NoPen);
-                    painter->drawEllipse(r);
 
-                    // ===== 2) Sombra interior radial =====
-                    // Usamos QRadialGradient pero movemos el foco hacia arriba
-                    QRadialGradient radial(
-                        r.center().x(),           // centro del degradado
-                                           r.center().y() + r.height()*0.10,  // foco desplazado hacia arriba
-                                           r.width() / 2.0           // radio
-                    );
-                    radial.setColorAt(0.0, QColor(0, 0, 0, 0));   // se desvanece hacia bordes
-                    radial.setColorAt(0.4, QColor(0, 0, 0, 10));
-                    radial.setColorAt(0.8, QColor(0, 0, 0, 70));
-                    radial.setColorAt(0.95, QColor(0, 0, 0, 120));
-                    radial.setColorAt(1.0, QColor(0, 0, 0, 120)); // más oscuro en el foco (arriba)
-
-                    painter->setBrush(radial);
-                    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                    painter->drawEllipse(r);
-
-                    // === Paso 3: borde sutil ===
-                    QPen border(QColor(0,0,0,100), 1);
-                    painter->setPen(border);
-                    painter->setBrush(Qt::NoBrush);
-                    painter->drawEllipse(r);
-
-                    if (backgroundColor.isValid())
-                    {
-                        QRectF r(0,0, 18, 18);
-
-                        // === Paso 1: fondo liso ===
-                        painter->setBrush(baseColor);
-                        painter->setPen(Qt::NoPen);
-                        painter->drawEllipse(r);
-
-                        // === Paso 2: sombra interior ===
-                        // Creamos un degradado vertical que simule la luz entrando por abajo
-                        QLinearGradient shadowGrad(r.topLeft(), r.bottomLeft());
-                        shadowGrad.setColorAt(0.0, QColor(0, 0, 0, 70));  // sombra fuerte arriba
-                        shadowGrad.setColorAt(0.5, QColor(0, 0, 0, 20));
-                        shadowGrad.setColorAt(1.0, QColor(0, 0, 0, 0));   // sin sombra abajo
-
-                        // Usamos composición para "restar luz" (sombra interior)
-                        painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-                        painter->setBrush(shadowGrad);
-                        painter->drawEllipse(r);
-
-                        // === Paso 3: borde sutil ===
-                        QPen border(QColor(0,0,0,100), 1);
-                        painter->setPen(border);
-                        painter->setBrush(Qt::NoBrush);
-                        painter->drawEllipse(r);
+                    // button shadow
+                    if (color.isValid()) {
+                        painter->save();
+                        drawShadow(painter, Qt::black, 21);
+                        painter->restore();
                     }
-                    if (isPressed() || isHovered()) {
-                        /*         if ((isPressed()) && backgroundColor.isValid())
-                         *                    { * *
-                         *                    painter->setPen(Qt::NoPen);
-                         *                    painter->setBrush(backgroundColor);
-                         *                    painter->drawEllipse(QRectF(0, 0, 18, 18));
-                    } */
-                        painter->setPen(pen);
-                        painter->setBrush(Qt::NoBrush);
 
-                        QPainterPath path;
-                        path.moveTo(5, 6);
-                        path.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
-                        path.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
-                        painter->drawPath(path);
+                    // button shadow
+                    if (isHovered()) {
+                        painter->save();
+                        drawOuterGlow(painter, glow, 21);
+                        painter->restore();
+                    }
+                    // plain background
+                    QLinearGradient lg(0, 3, 0 , (14.5 + 3));
+                    if (sunken) {
+                        lg.setColorAt(1, color);
+                        lg.setColorAt(0, color1.darker(130));
+                    } else {
+                        lg.setColorAt(0, color);
+                        lg.setColorAt(1, color1.darker(130));
+                    }
+
+                    const QRectF r(3.3, 3, 14.5, 14.5);
+                    painter->setBrush(lg);
+                    painter->drawEllipse(r);
+
+
+                    // outline circle
+                    const qreal penWidth(0.2);
+                    QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 2.7));
+                    lgc.setColorAt(0, color.lighter(110));
+                    lgc.setColorAt(1, color.darker(110));
+                    const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                    painter->setPen(QPen(lgc, penWidth));
+                    painter->setBrush(Qt::NoBrush);
+                    painter->drawEllipse(rc);
+
+                    if (foregroundColor.isValid())
+                    {
+                        // plain background
+                        QLinearGradient lg(0, 3, 0 , (14.5 + 2.7));
+                        if (sunken) {
+                            lg.setColorAt(1, color);
+                            lg.setColorAt(0, color1.darker(130));
+                        } else {
+                            lg.setColorAt(0, color);
+                            lg.setColorAt(1, color1.darker(130));
+                        }
+
+                        const QRectF r(3.3, 3, 14.5, 14.5);
+                        painter->setBrush(lg);
+                        painter->drawEllipse(r);
+
+
+                        // outline circle
+                        const qreal penWidth(0.2);
+                        QLinearGradient lgc(0, 3, 0, (2.0 * 14.5 + 3));
+                        lgc.setColorAt(0, color.lighter(110));
+                        lgc.setColorAt(1, color.darker(110));
+                        const QRectF rc(3.3 + penWidth, (3 + penWidth), (14.5 - penWidth), (14.5 - penWidth));
+                        painter->setPen(QPen(lgc, penWidth));
+                        painter->setBrush(Qt::NoBrush);
+                        painter->drawEllipse(rc);
+                    }
+                    painter->setPen(pens);
+                    painter->setBrush(symbolColor1);
+                    QPainterPath path1;
+                    path1.moveTo(5, 6);
+                    path1.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
+                    path1.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
+                    painter->drawPath(path1);
+
+                    painter->drawPoint(9, 15);
+
+                    painter->setPen(pen);
+                    painter->setBrush(symbolColor);
+                    QPainterPath path2;
+                    path2.moveTo(5, 6);
+                    path2.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
+                    path2.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
+                    painter->drawPath(path2);
+
+                    painter->drawPoint(9, 15);
+                    if (isHovered()) {
+                        painter->setPen(penGlow);
+                        painter->setBrush(glow);
+                        QPainterPath path3;
+                        path3.moveTo(5, 6);
+                        path3.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
+                        path3.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
+                        painter->drawPath(path3);
 
                         painter->drawPoint(9, 15);
                     }
@@ -4123,7 +4084,7 @@ namespace Breeze
     void Button::drawShadow(QPainter *painter, const QColor &color, int size) const
     {
         const qreal m(qreal(size - 2) * 0.5);
-        const qreal offset(0.8);
+        const qreal offset(0.6);
         const qreal k0((m - 4.0) / m);
         const qreal shadowGain = 1.5;
 
